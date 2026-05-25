@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin CMS - Full Control Panel</title>
+    <title>Admin CMS - File Storage Panel</title>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -29,6 +28,7 @@
             height: 100vh;
             overflow-y: auto;
             border-right: 1px solid #2d2d4a;
+            z-index: 100;
         }
         .sidebar h2 {
             text-align: center;
@@ -51,12 +51,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        .sidebar nav a:hover {
-            background: #0ef;
-            color: #1a1a3a;
-            transform: translateX(5px);
-        }
-        .sidebar nav a.active {
+        .sidebar nav a:hover, .sidebar nav a.active {
             background: #0ef;
             color: #1a1a3a;
         }
@@ -78,6 +73,7 @@
             text-align: center;
             transition: transform 0.3s;
             border: 1px solid #2d2d4a;
+            cursor: pointer;
         }
         .stat-card:hover {
             transform: translateY(-5px);
@@ -104,6 +100,8 @@
             margin-bottom: 20px;
             color: #0ef;
             font-size: 22px;
+            border-bottom: 1px solid #2d2d4a;
+            padding-bottom: 10px;
         }
         .form-group {
             margin-bottom: 18px;
@@ -114,7 +112,7 @@
             color: #0ef;
             font-weight: 500;
         }
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             background: #2a2a4a;
@@ -122,12 +120,6 @@
             border-radius: 8px;
             color: #fff;
             font-size: 14px;
-            transition: all 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #0ef;
-            box-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
         }
         .btn-primary {
             background: linear-gradient(90deg, #0ef, #00a3c4);
@@ -137,7 +129,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
             transition: all 0.3s;
         }
         .btn-primary:hover {
@@ -151,12 +142,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-left: 5px;
-        }
-        .btn-danger:hover {
-            background: #ff6b7c;
-            transform: scale(1.02);
         }
         .btn-edit {
             background: #ffa502;
@@ -166,20 +151,6 @@
             border-radius: 5px;
             cursor: pointer;
             margin-right: 5px;
-            transition: all 0.3s;
-        }
-        .btn-edit:hover {
-            background: #ffb43b;
-            transform: scale(1.02);
-        }
-        .btn-small {
-            background: #0ef;
-            color: #1a1a3a;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
         }
         .data-table {
             background: #1e1e3e;
@@ -187,10 +158,6 @@
             overflow-x: auto;
             margin-top: 20px;
             border: 1px solid #2d2d4a;
-        }
-        .data-table h3 {
-            padding: 20px 20px 0 20px;
-            color: #0ef;
         }
         .data-table table {
             width: 100%;
@@ -204,10 +171,6 @@
         .data-table th {
             background: #2a2a4a;
             color: #0ef;
-            font-weight: 600;
-        }
-        .data-table tr:hover {
-            background: #2a2a4a;
         }
         .skill-item-row {
             display: flex;
@@ -230,15 +193,6 @@
             border-radius: 10px;
             margin-bottom: 15px;
         }
-        .message-card h4 {
-            color: #0ef;
-            margin-bottom: 5px;
-        }
-        .message-card .message-date {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-bottom: 10px;
-        }
         .welcome-banner {
             background: linear-gradient(135deg, #0ef, #0066cc);
             padding: 20px 30px;
@@ -249,14 +203,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .welcome-text h3 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .date-time .time {
-            font-size: 28px;
-            font-weight: bold;
-        }
         .login-info {
             background: #2a2a4a;
             padding: 15px;
@@ -266,6 +212,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
         .visitor-stats {
             display: grid;
@@ -283,16 +230,11 @@
             color: #0ef;
             margin-bottom: 15px;
         }
-        .visitor-list {
-            max-height: 250px;
-            overflow-y: auto;
-        }
         .visitor-item {
             padding: 10px;
             border-bottom: 1px solid #2d2d4a;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
         .badge {
             background: #0ef;
@@ -300,14 +242,6 @@
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: bold;
-        }
-        .backup-item {
-            padding: 10px;
-            border-bottom: 1px solid #2d2d4a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .modal {
             display: none;
@@ -335,16 +269,16 @@
             cursor: pointer;
         }
         .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             padding: 12px 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            z-index: 2000;
             animation: slideDown 0.3s ease;
         }
-        .alert-success {
-            background: rgba(0, 214, 143, 0.2);
-            border: 1px solid #00d68f;
-            color: #00d68f;
-        }
+        .alert-success { background: rgba(0, 214, 143, 0.95); color: white; }
+        .alert-error { background: rgba(255, 71, 87, 0.95); color: white; }
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -353,8 +287,14 @@
             .sidebar { width: 70px; }
             .sidebar h2 span, .sidebar nav a span { display: none; }
             .main-content { margin-left: 70px; padding: 15px; }
-            .welcome-banner { flex-direction: column; text-align: center; gap: 10px; }
-            .login-info { flex-direction: column; gap: 10px; text-align: center; }
+        }
+        .file-info {
+            background: #0a0a2a;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -378,7 +318,6 @@
         <div class="main-content" id="mainContent"></div>
     </div>
 
-    <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -394,22 +333,22 @@
             window.location.href = 'login.html';
         }
 
-        // Get current logged in user
-        const currentAdmin = JSON.parse(localStorage.getItem('admin_account')) || {};
-        const currentProfile = JSON.parse(localStorage.getItem('portfolio_profile')) || {};
+        // API URL
+        const API_URL = 'save-data.php';
 
-        // Global variables for edit
         let currentEditType = null;
         let currentEditIndex = null;
+        let fileStatus = 'checking';
 
-        // ==================== HELPER FUNCTIONS ====================
+        const currentAdmin = JSON.parse(localStorage.getItem('admin_account')) || {};
+        
+        // Helper functions
         function showAlert(message, type = 'success') {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = message;
-            const mainContent = document.getElementById('mainContent');
-            mainContent.insertBefore(alertDiv, mainContent.firstChild);
-            setTimeout(() => alertDiv.remove(), 3000);
+            alertDiv.innerHTML = `<i class='bx bx-${type === 'success' ? 'check-circle' : 'error'}'></i> ${message}`;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 4000);
         }
 
         function escapeHtml(str) {
@@ -432,13 +371,129 @@
             };
         }
 
+        // ==================== FILE STORAGE FUNCTIONS ====================
+        
+        async function saveAllToFile() {
+            showAlert('Saving all data to file...', 'success');
+            
+            const allData = {};
+            const sections = ['portfolio_profile', 'portfolio_about', 'portfolio_services', 
+                             'portfolio_skills_technical', 'portfolio_skills_professional', 
+                             'portfolio_projects', 'portfolio_teamwork', 'contact_messages', 
+                             'website_visitors', 'admin_account'];
+            
+            for (const section of sections) {
+                const value = localStorage.getItem(section);
+                if (value) {
+                    allData[section] = JSON.parse(value);
+                }
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}?path=all`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('✅ All data saved to portfolio_data.json file!');
+                    checkFileStatus();
+                    return true;
+                }
+            } catch (error) {
+                showAlert('❌ Failed to save to file: ' + error.message, 'error');
+            }
+            return false;
+        }
+
+        async function loadAllFromFile() {
+            showAlert('Loading data from file...', 'success');
+            
+            try {
+                const response = await fetch(`${API_URL}?path=all`);
+                const data = await response.json();
+                
+                let loadCount = 0;
+                for (const [key, value] of Object.entries(data)) {
+                    if (key !== 'last_updated' && value && typeof value === 'object') {
+                        localStorage.setItem(key, JSON.stringify(value));
+                        loadCount++;
+                    }
+                }
+                
+                showAlert(`✅ Loaded ${loadCount} sections from portfolio_data.json! Refreshing...`);
+                setTimeout(() => location.reload(), 1500);
+            } catch (error) {
+                showAlert('❌ Failed to load from file: ' + error.message, 'error');
+            }
+        }
+
+        async function exportBackup() {
+            try {
+                window.open(`${API_URL}?path=backup`, '_blank');
+                showAlert('✅ Backup file downloaded!');
+            } catch (error) {
+                showAlert('❌ Backup failed: ' + error.message, 'error');
+            }
+        }
+
+        function restoreBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async function(event) {
+                        try {
+                            const response = await fetch(`${API_URL}?path=backup`, {
+                                method: 'POST',
+                                body: event.target.result
+                            });
+                            const result = await response.json();
+                            if (result.success) {
+                                showAlert('✅ Backup restored! Refreshing...');
+                                setTimeout(() => location.reload(), 1500);
+                            }
+                        } catch (error) {
+                            showAlert('❌ Restore failed: ' + error.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        async function checkFileStatus() {
+            try {
+                const response = await fetch(`${API_URL}?path=ping`);
+                const data = await response.json();
+                fileStatus = 'online';
+                document.getElementById('fileStatus')?.setAttribute('class', 'badge');
+                document.getElementById('fileStatusText')?.setAttribute('class', 'badge');
+                if (document.getElementById('fileStatusText')) {
+                    document.getElementById('fileStatusText').innerHTML = '✅ Connected';
+                }
+                return true;
+            } catch (error) {
+                fileStatus = 'offline';
+                if (document.getElementById('fileStatusText')) {
+                    document.getElementById('fileStatusText').innerHTML = '⚠️ Offline (Using LocalStorage)';
+                }
+                return false;
+            }
+        }
+
         // ==================== INITIALIZE DATA ====================
-        function initAllData() {
+        function initLocalData() {
             if (!localStorage.getItem('portfolio_profile')) {
                 localStorage.setItem('portfolio_profile', JSON.stringify({
                     name: 'Rahul Mahato',
                     title: 'Full Stack Developer',
-                    bio: 'I\'m a web Designer with extensive experience for over 2 months.',
+                    bio: 'I\'m a web Designer with extensive experience.',
                     image: './images/ME.jpeg',
                     cv: 'cv/cv-3.docx',
                     email: 'rm91275@gmail.com',
@@ -505,301 +560,8 @@
             if (!localStorage.getItem('website_visitors')) {
                 localStorage.setItem('website_visitors', JSON.stringify([]));
             }
-            if (!localStorage.getItem('total_visitors')) {
-                localStorage.setItem('total_visitors', '0');
-            }
         }
-        initAllData();
-
-        // ==================== DATABASE BACKUP FUNCTIONS ====================
-        // IndexedDB Database functions
-        const DB_NAME = 'PortfolioDB';
-        const DB_VERSION = 1;
-        const STORE_NAME = 'portfolioData';
-
-        function openDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'key' });
-                        store.createIndex('key', 'key', { unique: true });
-                        store.createIndex('timestamp', 'timestamp');
-                    }
-                };
-            });
-        }
-
-        async function saveAllToDB() {
-            try {
-                const db = await openDB();
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                
-                const allData = {};
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    allData[key] = localStorage.getItem(key);
-                }
-                allData['_backup_timestamp'] = new Date().toISOString();
-                
-                return new Promise((resolve, reject) => {
-                    const request = store.put({ key: 'portfolio_backup', data: allData, timestamp: Date.now() });
-                    request.onsuccess = () => resolve(true);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) {
-                console.error('Backup error:', error);
-                return false;
-            }
-        }
-
-        async function loadAllFromDB() {
-            try {
-                const db = await openDB();
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                
-                return new Promise((resolve, reject) => {
-                    const request = store.get('portfolio_backup');
-                    request.onsuccess = () => {
-                        if (request.result && request.result.data) {
-                            const data = request.result.data;
-                            for (const [key, value] of Object.entries(data)) {
-                                if (!key.startsWith('_')) {
-                                    localStorage.setItem(key, value);
-                                }
-                            }
-                            resolve(true);
-                        } else {
-                            resolve(false);
-                        }
-                    };
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) {
-                console.error('Restore error:', error);
-                return false;
-            }
-        }
-
-        async function getBackupHistory() {
-            try {
-                const db = await openDB();
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const index = store.index('timestamp');
-                
-                return new Promise((resolve, reject) => {
-                    const backups = [];
-                    const request = index.openCursor();
-                    request.onsuccess = (event) => {
-                        const cursor = event.target.result;
-                        if (cursor) {
-                            backups.push({
-                                key: cursor.value.key,
-                                timestamp: cursor.value.timestamp,
-                                date: new Date(cursor.value.timestamp).toLocaleString()
-                            });
-                            cursor.continue();
-                        } else {
-                            resolve(backups);
-                        }
-                    };
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) {
-                return [];
-            }
-        }
-
-        async function exportDBToJSON() {
-            try {
-                const db = await openDB();
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                
-                return new Promise((resolve, reject) => {
-                    const allData = [];
-                    const request = store.openCursor();
-                    request.onsuccess = (event) => {
-                        const cursor = event.target.result;
-                        if (cursor) {
-                            allData.push(cursor.value);
-                            cursor.continue();
-                        } else {
-                            const exportData = {
-                                exportDate: new Date().toISOString(),
-                                backups: allData
-                            };
-                            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `portfolio_backup_${new Date().toISOString().slice(0,19)}.json`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                            resolve(true);
-                        }
-                    };
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (error) {
-                showAlert('Export failed: ' + error.message, 'error');
-            }
-        }
-
-        async function importJSONToDB(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        const db = await openDB();
-                        const transaction = db.transaction([STORE_NAME], 'readwrite');
-                        const store = transaction.objectStore(STORE_NAME);
-                        
-                        for (const backup of data.backups) {
-                            await new Promise((res, rej) => {
-                                const request = store.put(backup);
-                                request.onsuccess = () => res();
-                                request.onerror = () => rej(request.error);
-                            });
-                        }
-                        resolve(true);
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                reader.readAsText(file);
-            });
-        }
-
-        // Backup UI Functions
-        window.backupToDatabase = async function() {
-            const success = await saveAllToDB();
-            if (success) {
-                showAlert('✅ Data saved to IndexedDB database successfully!');
-                loadBackupList();
-            } else {
-                showAlert('❌ Backup failed!', 'error');
-            }
-        };
-
-        window.restoreFromDatabase = async function() {
-            if (confirm('Restore from database? Current unsaved data will be lost.')) {
-                const restored = await loadAllFromDB();
-                if (restored) {
-                    showAlert('✅ Data restored from database! Refreshing page...');
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    showAlert('No backup found in database', 'error');
-                }
-            }
-        };
-
-        window.exportDatabase = async function() {
-            await exportDBToJSON();
-            showAlert('✅ Database exported to JSON file!');
-        };
-
-        window.importDatabase = function() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    try {
-                        await importJSONToDB(file);
-                        showAlert('✅ Database imported successfully!');
-                        loadBackupList();
-                    } catch (error) {
-                        showAlert('❌ Import failed: ' + error.message, 'error');
-                    }
-                }
-            };
-            input.click();
-        };
-
-        async function loadBackupList() {
-            const backups = await getBackupHistory();
-            const backupList = document.getElementById('backupList');
-            if (backupList) {
-                if (backups.length === 0) {
-                    backupList.innerHTML = '<p>No backups found in IndexedDB</p>';
-                } else {
-                    backupList.innerHTML = backups.map(b => `
-                        <div class="backup-item">
-                            <span>📅 ${b.date}</span>
-                            <button class="btn-small" onclick="restoreSpecificBackup('${b.key}')">Restore</button>
-                        </div>
-                    `).join('');
-                }
-            }
-        }
-
-        window.restoreSpecificBackup = async function(key) {
-            if (confirm('Restore this backup? Current data will be replaced.')) {
-                const db = await openDB();
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.get(key);
-                request.onsuccess = () => {
-                    if (request.result && request.result.data) {
-                        const data = request.result.data;
-                        for (const [k, v] of Object.entries(data)) {
-                            if (!k.startsWith('_')) {
-                                localStorage.setItem(k, v);
-                            }
-                        }
-                        showAlert('Backup restored! Refreshing...');
-                        setTimeout(() => location.reload(), 1500);
-                    }
-                };
-            }
-        };
-
-        // ==================== VISITOR TRACKING ====================
-        function initVisitorTracking() {
-            const visitors = JSON.parse(localStorage.getItem('website_visitors') || '[]');
-            const today = new Date().toDateString();
-            const existingToday = visitors.some(v => v.date === today);
-            
-            if (!existingToday) {
-                const newVisitor = {
-                    id: Date.now(),
-                    city: 'Visitor',
-                    country: 'Location',
-                    device: getDeviceType(),
-                    browser: getBrowser(),
-                    date: today,
-                    timestamp: new Date().toISOString()
-                };
-                visitors.push(newVisitor);
-                localStorage.setItem('website_visitors', JSON.stringify(visitors));
-                localStorage.setItem('total_visitors', visitors.length);
-            }
-        }
-
-        function getDeviceType() {
-            const ua = navigator.userAgent;
-            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return 'Tablet';
-            if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle/i.test(ua)) return 'Mobile';
-            return 'Desktop';
-        }
-
-        function getBrowser() {
-            const ua = navigator.userAgent;
-            if (ua.includes('Chrome')) return 'Chrome';
-            if (ua.includes('Firefox')) return 'Firefox';
-            if (ua.includes('Safari')) return 'Safari';
-            if (ua.includes('Edge')) return 'Edge';
-            return 'Other';
-        }
+        initLocalData();
 
         // ==================== RENDER FUNCTIONS ====================
         function showSection(section) {
@@ -811,7 +573,7 @@
             
             const content = document.getElementById('mainContent');
             switch(section) {
-                case 'dashboard': content.innerHTML = renderDashboard(); setTimeout(loadBackupList, 500); break;
+                case 'dashboard': content.innerHTML = renderDashboard(); checkFileStatus(); break;
                 case 'profile': content.innerHTML = renderProfile(); break;
                 case 'about': content.innerHTML = renderAbout(); break;
                 case 'services': content.innerHTML = renderServices(); break;
@@ -827,29 +589,17 @@
             const profile = JSON.parse(localStorage.getItem('portfolio_profile') || '{}');
             const services = JSON.parse(localStorage.getItem('portfolio_services') || '[]');
             const projects = JSON.parse(localStorage.getItem('portfolio_projects') || '[]');
-            const techSkills = JSON.parse(localStorage.getItem('portfolio_skills_technical') || '[]');
             const messages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
             const visitors = JSON.parse(localStorage.getItem('website_visitors') || '[]');
-            const totalVisitors = localStorage.getItem('total_visitors') || visitors.length;
             const dateTime = updateDateTime();
             const greeting = getGreeting();
             const adminName = currentAdmin.name || profile.name || 'Admin';
-            const todayVisitors = visitors.filter(v => v.date === new Date().toDateString()).length;
             
-            const locationStats = {};
-            visitors.forEach(v => {
-                const loc = `${v.city || 'Unknown'}, ${v.country || 'Unknown'}`;
-                locationStats[loc] = (locationStats[loc] || 0) + 1;
-            });
-            
-            const deviceStats = { Desktop: 0, Mobile: 0, Tablet: 0 };
-            visitors.forEach(v => { deviceStats[v.device] = (deviceStats[v.device] || 0) + 1; });
-
             return `
                 <div class="welcome-banner">
                     <div class="welcome-text">
                         <h3><i class='bx bx-smile'></i> ${greeting}, ${adminName}!</h3>
-                        <p>Welcome back to your Portfolio CMS Dashboard</p>
+                        <p>Welcome to File-Based Portfolio CMS</p>
                     </div>
                     <div class="date-time">
                         <div class="time">${dateTime.time}</div>
@@ -859,75 +609,54 @@
 
                 <div class="login-info">
                     <div><i class='bx bx-user-circle'></i> <strong>Logged in as:</strong> ${adminName}</div>
-                    <div><i class='bx bx-envelope'></i> <strong>Email:</strong> ${currentAdmin.email || profile.email || 'Not set'}</div>
-                    <div><i class='bx bx-shield'></i> <strong>Role:</strong> Super Admin</div>
+                    <div><i class='bx bx-envelope'></i> <strong>Email:</strong> ${currentAdmin.email || profile.email}</div>
+                    <div><i class='bx bx-file'></i> <strong>File Storage:</strong> <span id="fileStatusText">Checking...</span></div>
                 </div>
 
                 <div class="stats-grid">
-                    <div class="stat-card"><h3>Profile</h3><p>✅</p><small>${profile.name || 'Not set'}</small></div>
-                    <div class="stat-card"><h3>Services</h3><p>${services.length}</p></div>
-                    <div class="stat-card"><h3>Projects</h3><p>${projects.length}</p></div>
-                    <div class="stat-card"><h3>Skills</h3><p>${techSkills.length}</p></div>
-                    <div class="stat-card"><h3>TeamWork</h3><p>${JSON.parse(localStorage.getItem('portfolio_teamwork') || '[]').length}</p></div>
-                    <div class="stat-card"><h3>Messages</h3><p>${messages.length}</p></div>
-                    <div class="stat-card"><h3>Total Visitors</h3><p>${totalVisitors}</p></div>
-                    <div class="stat-card"><h3>Today's Visitors</h3><p>${todayVisitors}</p></div>
+                    <div class="stat-card" onclick="showSection('profile')"><h3>Profile</h3><p>✅</p><small>${profile.name}</small></div>
+                    <div class="stat-card" onclick="showSection('services')"><h3>Services</h3><p>${services.length}</p></div>
+                    <div class="stat-card" onclick="showSection('projects')"><h3>Projects</h3><p>${projects.length}</p></div>
+                    <div class="stat-card" onclick="showSection('contact')"><h3>Messages</h3><p>${messages.length}</p></div>
+                    <div class="stat-card"><h3>Visitors</h3><p>${visitors.length}</p></div>
                 </div>
 
                 <div class="form-container">
-                    <h3><i class='bx bx-data'></i> Database Backup System (IndexedDB)</h3>
-                    <p>Your data is automatically backed up to IndexedDB. Use these controls for manual backup/restore.</p>
+                    <h3><i class='bx bx-file'></i> File Storage System (portfolio_data.json)</h3>
+                    <p>Your data is stored in a JSON file on the server. This file persists after deployment!</p>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; margin: 20px 0;">
-                        <button class="btn-primary" onclick="backupToDatabase()"><i class='bx bx-save'></i> Backup to DB</button>
-                        <button class="btn-primary" onclick="restoreFromDatabase()"><i class='bx bx-refresh'></i> Restore from DB</button>
-                        <button class="btn-primary" onclick="exportDatabase()"><i class='bx bx-download'></i> Export to File</button>
-                        <button class="btn-primary" onclick="importDatabase()"><i class='bx bx-upload'></i> Import from File</button>
+                        <button class="btn-primary" onclick="saveAllToFile()"><i class='bx bx-save'></i> Save to File</button>
+                        <button class="btn-primary" onclick="loadAllFromFile()"><i class='bx bx-folder-open'></i> Load from File</button>
+                        <button class="btn-primary" onclick="exportBackup()"><i class='bx bx-download'></i> Download Backup</button>
+                        <button class="btn-primary" onclick="restoreBackup()"><i class='bx bx-upload'></i> Restore Backup</button>
                     </div>
-                    <div id="backupList" style="margin-top: 15px; max-height: 200px; overflow-y: auto;">
-                        <p>Loading backups...</p>
+                    <div class="file-info">
+                        <i class='bx bx-info-circle'></i> <strong>File Location:</strong> /portfolio_data.json<br>
+                        <i class='bx bx-check-circle'></i> <strong>Data Persistence:</strong> Data saved to file survives server restarts and deployments!
                     </div>
-                    <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">
-                        <i class='bx bx-info-circle'></i> IndexedDB persists data in your browser. Export before clearing cache!
-                    </p>
                 </div>
 
                 <div class="visitor-stats">
                     <div class="visitor-card">
-                        <h4><i class='bx bx-map'></i> Top Locations</h4>
-                        <div class="visitor-list">
-                            ${Object.entries(locationStats).slice(0, 5).map(([loc, count]) => `
-                                <div class="visitor-item"><span>${loc}</span><span class="badge">${count} visits</span></div>
-                            `).join('') || '<p>No location data yet</p>'}
-                        </div>
-                    </div>
-                    <div class="visitor-card">
-                        <h4><i class='bx bx-devices'></i> Device Statistics</h4>
-                        <div class="visitor-list">
-                            <div class="visitor-item"><span>Desktop</span><span class="badge">${deviceStats.Desktop} visits</span></div>
-                            <div class="visitor-item"><span>Mobile</span><span class="badge">${deviceStats.Mobile} visits</span></div>
-                            <div class="visitor-item"><span>Tablet</span><span class="badge">${deviceStats.Tablet} visits</span></div>
-                        </div>
-                    </div>
-                    <div class="visitor-card">
-                        <h4><i class='bx bx-time'></i> Recent Visitors</h4>
+                        <h4><i class='bx bx-map'></i> Recent Visitors</h4>
                         <div class="visitor-list">
                             ${visitors.slice(-5).reverse().map(v => `
                                 <div class="visitor-item">
-                                    <div>${v.city || 'Unknown'}, ${v.country || 'Unknown'}</div>
-                                    <div><span class="badge">${v.device}</span></div>
+                                    <span>${v.city || 'Unknown'}, ${v.country || 'Unknown'}</span>
+                                    <span class="badge">${v.device || 'Desktop'}</span>
                                 </div>
-                            `).join('') || '<p>No recent visitors</p>'}
+                            `).join('') || '<p>No visitors yet</p>'}
                         </div>
                     </div>
                 </div>
 
                 <div class="form-container">
-                    <h3>Quick Stats</h3>
+                    <h3><i class='bx bx-info-circle'></i> System Information</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <div><strong>📄 Pages:</strong> 7</div>
-                        <div><strong>📁 Sections:</strong> 8</div>
-                        <div><strong>💾 Storage:</strong> ${Math.round(JSON.stringify(localStorage).length / 1024)} KB</div>
-                        <div><strong>🗄️ IndexedDB:</strong> Active</div>
+                        <div><strong>📄 Storage Type:</strong> JSON File</div>
+                        <div><strong>💾 LocalStorage Used:</strong> ${Math.round(JSON.stringify(localStorage).length / 1024)} KB</div>
+                        <div><strong>📁 File Name:</strong> portfolio_data.json</div>
+                        <div><strong>🔄 Auto-Save:</strong> Manual</div>
                     </div>
                 </div>
             `;
@@ -939,22 +668,17 @@
             return `
                 <div class="form-container">
                     <h3><i class='bx bx-user-edit'></i> Edit Profile</h3>
-                    <div class="form-group"><label>Full Name</label><input type="text" id="profileName" value="${profile.name || ''}"></div>
-                    <div class="form-group"><label>Title</label><input type="text" id="profileTitle" value="${profile.title || ''}"></div>
-                    <div class="form-group"><label>Bio</label><textarea id="profileBio" rows="4">${profile.bio || ''}</textarea></div>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="profileName" value="${escapeHtml(profile.name || '')}"></div>
+                    <div class="form-group"><label>Title</label><input type="text" id="profileTitle" value="${escapeHtml(profile.title || '')}"></div>
+                    <div class="form-group"><label>Bio</label><textarea id="profileBio" rows="4">${escapeHtml(profile.bio || '')}</textarea></div>
                     <div class="form-group"><label>Image URL</label><input type="text" id="profileImage" value="${profile.image || ''}"></div>
                     <div class="form-group"><label>CV URL</label><input type="text" id="profileCV" value="${profile.cv || ''}"></div>
-                    <div class="form-group"><label>Email (Login ID)</label><input type="email" id="profileEmail" value="${admin.email || profile.email || ''}"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="profileEmail" value="${admin.email || profile.email || ''}"></div>
                     <div class="form-group"><label>Phone</label><input type="text" id="profilePhone" value="${profile.phone || ''}"></div>
                     <div class="form-group"><label>Address</label><input type="text" id="profileAddress" value="${profile.address || ''}"></div>
                     <div class="form-group"><label>New Password</label><input type="password" id="profilePassword" placeholder="Leave blank to keep current"></div>
                     <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
-                </div>
-                <div class="form-container">
-                    <h3>Login Information</h3>
-                    <p><strong>Email:</strong> ${admin.email || profile.email || 'Not set'}</p>
-                    <p><strong>Role:</strong> Administrator</p>
-                    <p><strong>Last Login:</strong> ${localStorage.getItem('last_login') || 'First login'}</p>
+                    <button class="btn-primary" onclick="saveAllToFile()" style="margin-left: 10px;">Save to File</button>
                 </div>
             `;
         }
@@ -977,10 +701,9 @@
             const newPassword = document.getElementById('profilePassword').value;
             if (newPassword && newPassword.length >= 6) {
                 admin.password = newPassword;
-                showAlert('Password updated! Please login again.');
             }
             localStorage.setItem('admin_account', JSON.stringify(admin));
-            showAlert('Profile updated successfully!');
+            showAlert('Profile saved to LocalStorage! Click "Save to File" to persist.');
         }
 
         function renderAbout() {
@@ -989,10 +712,10 @@
             return `
                 <div class="form-container">
                     <h3>Edit About Section</h3>
-                    <div class="form-group"><label>Subtitle</label><input type="text" id="aboutSubtitle" value="${about.mainText || ''}"></div>
-                    <div class="form-group"><label>Paragraph 1</label><textarea id="aboutPara1" rows="3">${paragraphs[0] || ''}</textarea></div>
-                    <div class="form-group"><label>Paragraph 2</label><textarea id="aboutPara2" rows="3">${paragraphs[1] || ''}</textarea></div>
-                    <div class="form-group"><label>Paragraph 3</label><textarea id="aboutPara3" rows="3">${paragraphs[2] || ''}</textarea></div>
+                    <div class="form-group"><label>Subtitle</label><input type="text" id="aboutSubtitle" value="${escapeHtml(about.mainText || '')}"></div>
+                    <div class="form-group"><label>Paragraph 1</label><textarea id="aboutPara1" rows="3">${escapeHtml(paragraphs[0] || '')}</textarea></div>
+                    <div class="form-group"><label>Paragraph 2</label><textarea id="aboutPara2" rows="3">${escapeHtml(paragraphs[1] || '')}</textarea></div>
+                    <div class="form-group"><label>Paragraph 3</label><textarea id="aboutPara3" rows="3">${escapeHtml(paragraphs[2] || '')}</textarea></div>
                     <button class="btn-primary" onclick="saveAbout()">Save About</button>
                 </div>
             `;
@@ -1008,7 +731,7 @@
                 ]
             };
             localStorage.setItem('portfolio_about', JSON.stringify(about));
-            showAlert('About section updated!');
+            showAlert('About section saved!');
         }
 
         function renderServices() {
@@ -1016,16 +739,12 @@
             return `
                 <div class="form-container">
                     <h3>Add New Service</h3>
-                    <div class="form-group"><label>Icon Class</label><input type="text" id="newServiceIcon" value="bx bx-code"></div>
+                    <div class="form-group"><label>Icon</label><input type="text" id="newServiceIcon" value="bx bx-code"></div>
                     <div class="form-group"><label>Title</label><input type="text" id="newServiceTitle"></div>
                     <div class="form-group"><label>Description</label><textarea id="newServiceDesc" rows="3"></textarea></div>
                     <button class="btn-primary" onclick="addService()">+ Add Service</button>
                 </div>
-                <div class="data-table">
-                    <h3>Services (${services.length})</h3>
-                    <table><thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead>
-                    <tbody>${services.map((s, i) => `<tr><td><i class='${s.icon}' style="font-size:24px;color:#0ef;"></i></td><td><strong>${escapeHtml(s.title)}</strong></td><td>${escapeHtml(s.description.substring(0, 80))}...</td><td><button class="btn-edit" onclick="openEditModal('service', ${i})">Edit</button><button class="btn-danger" onclick="deleteService(${i})">Delete</button></td></tr>`).join('')}</tbody></table>
-                </div>
+                <div class="data-table"><h3>Services (${services.length})</h3><table><thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Actions</th></tr></thead><tbody>${services.map((s, i) => `<tr><td><i class='${s.icon}' style="font-size:24px;color:#0ef;"></i></td><td><strong>${escapeHtml(s.title)}</strong></td><td>${escapeHtml(s.description.substring(0, 80))}...</td><td><button class="btn-edit" onclick="openEditModal('service', ${i})">Edit</button><button class="btn-danger" onclick="deleteService(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>
             `;
         }
 
@@ -1056,11 +775,11 @@
             return `
                 <div class="form-container"><h3>Technical Skills</h3>
                     ${technical.map((s, i) => `<div class="skill-item-row"><input type="text" id="techName${i}" value="${escapeHtml(s.name)}"><input type="number" id="techLevel${i}" value="${s.level}" style="width:100px;"><button class="btn-edit" onclick="updateTechnicalSkill(${i})">Save</button><button class="btn-danger" onclick="deleteTechnicalSkill(${i})">Delete</button></div>`).join('')}
-                    <div style="margin-top:20px;"><h4>Add Technical Skill</h4><div class="skill-item-row"><input type="text" id="newTechName" placeholder="Skill name"><input type="number" id="newTechLevel" placeholder="Level" style="width:100px;"><button class="btn-primary" onclick="addTechnicalSkill()">Add</button></div></div>
+                    <div style="margin-top:20px;"><h4>Add Technical Skill</h4><div class="skill-item-row"><input type="text" id="newTechName" placeholder="Skill name"><input type="number" id="newTechLevel" placeholder="Level"><button class="btn-primary" onclick="addTechnicalSkill()">Add</button></div></div>
                 </div>
                 <div class="form-container"><h3>Professional Skills</h3>
                     ${professional.map((s, i) => `<div class="skill-item-row"><input type="text" id="profName${i}" value="${escapeHtml(s.name)}"><input type="number" id="profLevel${i}" value="${s.level}" style="width:100px;"><button class="btn-edit" onclick="updateProfessionalSkill(${i})">Save</button><button class="btn-danger" onclick="deleteProfessionalSkill(${i})">Delete</button></div>`).join('')}
-                    <div style="margin-top:20px;"><h4>Add Professional Skill</h4><div class="skill-item-row"><input type="text" id="newProfName" placeholder="Skill name"><input type="number" id="newProfLevel" placeholder="Level" style="width:100px;"><button class="btn-primary" onclick="addProfessionalSkill()">Add</button></div></div>
+                    <div style="margin-top:20px;"><h4>Add Professional Skill</h4><div class="skill-item-row"><input type="text" id="newProfName" placeholder="Skill name"><input type="number" id="newProfLevel" placeholder="Level"><button class="btn-primary" onclick="addProfessionalSkill()">Add</button></div></div>
                 </div>
             `;
         }
@@ -1128,19 +847,14 @@
         function renderProjects() {
             let projects = JSON.parse(localStorage.getItem('portfolio_projects') || '[]');
             return `
-                <div class="form-container">
-                    <h3>Add New Project</h3>
+                <div class="form-container"><h3>Add New Project</h3>
                     <div class="form-group"><label>Title</label><input type="text" id="newProjectTitle"></div>
                     <div class="form-group"><label>Description</label><textarea id="newProjectDesc" rows="3"></textarea></div>
                     <div class="form-group"><label>Image URL</label><input type="text" id="newProjectImage"></div>
                     <div class="form-group"><label>Technologies</label><input type="text" id="newProjectTech" placeholder="React, Node.js"></div>
                     <button class="btn-primary" onclick="addProject()">+ Add Project</button>
                 </div>
-                <div class="data-table">
-                    <h3>Projects (${projects.length})</h3>
-                    <table><thead><tr><th>Image</th><th>Title</th><th>Technologies</th><th>Actions</th></tr></thead>
-                    <tbody>${projects.map((p, i) => `<tr><td><img src="${p.image || 'images/placeholder.png'}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;"></td><td><strong>${escapeHtml(p.title)}</strong></td><td>${(p.technologies || []).join(', ')}</td><td><button class="btn-edit" onclick="openEditModal('project', ${i})">Edit</button><button class="btn-danger" onclick="deleteProject(${i})">Delete</button></td></tr>`).join('')}</tbody></table>
-                </div>
+                <div class="data-table"><h3>Projects (${projects.length})</h3><table><thead><tr><th>Title</th><th>Technologies</th><th>Actions</th></tr></thead><tbody>${projects.map((p, i) => `<tr><td><strong>${escapeHtml(p.title)}</strong></td><td>${(p.technologies || []).join(', ')}</td><td><button class="btn-edit" onclick="openEditModal('project', ${i})">Edit</button><button class="btn-danger" onclick="deleteProject(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>
             `;
         }
 
@@ -1168,19 +882,14 @@
         function renderTeamwork() {
             let teamwork = JSON.parse(localStorage.getItem('portfolio_teamwork') || '[]');
             return `
-                <div class="form-container">
-                    <h3>Add TeamWork Entry</h3>
+                <div class="form-container"><h3>Add TeamWork Entry</h3>
                     <div class="form-group"><label>Title</label><input type="text" id="newTeamTitle"></div>
                     <div class="form-group"><label>Description</label><textarea id="newTeamDesc" rows="3"></textarea></div>
                     <div class="form-group"><label>Image URL</label><input type="text" id="newTeamImage"></div>
                     <div class="form-group"><label>Role</label><input type="text" id="newTeamRole"></div>
                     <button class="btn-primary" onclick="addTeamwork()">+ Add TeamWork</button>
                 </div>
-                <div class="data-table">
-                    <h3>TeamWork (${teamwork.length})</h3>
-                    <table><thead><tr><th>Title</th><th>Role</th><th>Description</th><th>Actions</th></tr></thead>
-                    <tbody>${teamwork.map((t, i) => `<tr><td><strong>${escapeHtml(t.title)}</strong></td><td>${t.role || 'Member'}</td><td>${escapeHtml(t.description.substring(0, 60))}...</td><td><button class="btn-edit" onclick="openEditModal('teamwork', ${i})">Edit</button><button class="btn-danger" onclick="deleteTeamwork(${i})">Delete</button></td></tr>`).join('')}</tbody></table>
-                </div>
+                <div class="data-table"><h3>TeamWork (${teamwork.length})</h3><table><thead><tr><th>Title</th><th>Role</th><th>Description</th><th>Actions</th></tr></thead><tbody>${teamwork.map((t, i) => `<tr><td><strong>${escapeHtml(t.title)}</strong></td><td>${t.role || 'Member'}</td><td>${escapeHtml(t.description.substring(0, 60))}...</td><td><button class="btn-edit" onclick="openEditModal('teamwork', ${i})">Edit</button><button class="btn-danger" onclick="deleteTeamwork(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>
             `;
         }
 
@@ -1220,6 +929,7 @@
             }
         }
 
+        // Modal functions
         function openEditModal(type, index) {
             currentEditType = type;
             currentEditIndex = index;
@@ -1276,17 +986,38 @@
         }
 
         function logout() {
-            localStorage.setItem('last_login', new Date().toLocaleString());
             localStorage.removeItem('isLoggedIn');
             window.location.href = 'login.html';
         }
 
-        // Initialize
-        if (!localStorage.getItem('last_login')) {
-            localStorage.setItem('last_login', new Date().toLocaleString());
-        }
-        initVisitorTracking();
+        // Make functions global
+        window.showSection = showSection;
+        window.saveProfile = saveProfile;
+        window.saveAbout = saveAbout;
+        window.addService = addService;
+        window.deleteService = deleteService;
+        window.openEditModal = openEditModal;
+        window.saveEdit = saveEdit;
+        window.closeModal = closeModal;
+        window.logout = logout;
+        window.saveAllToFile = saveAllToFile;
+        window.loadAllFromFile = loadAllFromFile;
+        window.exportBackup = exportBackup;
+        window.restoreBackup = restoreBackup;
+        window.addTechnicalSkill = addTechnicalSkill;
+        window.deleteTechnicalSkill = deleteTechnicalSkill;
+        window.updateTechnicalSkill = updateTechnicalSkill;
+        window.addProfessionalSkill = addProfessionalSkill;
+        window.deleteProfessionalSkill = deleteProfessionalSkill;
+        window.updateProfessionalSkill = updateProfessionalSkill;
+        window.addProject = addProject;
+        window.deleteProject = deleteProject;
+        window.addTeamwork = addTeamwork;
+        window.deleteTeamwork = deleteTeamwork;
+        window.deleteMessage = deleteMessage;
+
         showSection('dashboard');
+        checkFileStatus();
     </script>
 </body>
 </html>

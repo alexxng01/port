@@ -1,0 +1,37 @@
+<div class="contact" id="contact">
+    <div class="contact-form">
+        <h2>Contact <span>Me</span></h2>
+        <form onsubmit="submitContact(event)">
+            <div class="form-group">
+                <input type="text" id="contactName" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="contactEmail" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <textarea id="contactMessage" placeholder="Your Message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn-box">Send Message</button>
+        </form>
+    </div>
+    <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <div class="form-group">
+    <label>Email Address</label>
+    <input type="email" id="profileEmail" value="${profile.email || ''}">
+</div>
+<div class="form-group">
+    <label>Phone Number</label>
+    <input type="text" id="profilePhone" value="${profile.phone || ''}">
+</div>
+<div class="form-group">
+    <label>Address</label>
+    <input type="text" id="profileAddress" value="${profile.address || ''}">
+</div>
+            <a href="#"><i class="bx bxl-facebook"></i></a>
+            <a href="#"><i class="bx bxl-instagram"></i></a>
+            <a href="#"><i class="bx bxl-linkedin"></i></a>
+            <a href="#"><i class="bx bxl-github"></i></a>
+        </div>
+    </div>
+</div>

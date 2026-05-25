@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Portfolio CMS</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #071b27);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 0 30px rgba(0, 238, 255, 0.2);
+            border: 1px solid #0ef;
+        }
+        .login-container h2 {
+            text-align: center;
+            color: #0ef;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .login-container h2 i {
+            margin-right: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0ef;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #0ef;
+            box-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #0ef, #00a3c4);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 238, 255, 0.4);
+        }
+        .forgot-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .forgot-link a {
+            color: #0ef;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .forgot-link a:hover {
+            text-decoration: underline;
+        }
+        .error-msg {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid #ff4757;
+            color: #ff4757;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        .success-msg {
+            background: rgba(0, 214, 143, 0.2);
+            border: 1px solid #00d68f;
+            color: #00d68f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8899aa;
+        }
+        .password-field {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #8899aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2><i class='bx bx-lock-alt'></i> Admin Login</h2>
+        
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label><i class='bx bx-envelope'></i> Email Address</label>
+                <input type="email" id="email" placeholder="admin@example.com" required>
+            </div>
+            <div class="form-group">
+                <label><i class='bx bx-lock'></i> Password</label>
+                <div class="password-field">
+                    <input type="password" id="password" placeholder="Enter password" required>
+                    <i class='bx bx-show toggle-password' onclick="togglePassword()"></i>
+                </div>
+            </div>
+            <button type="submit" class="login-btn"><i class='bx bx-log-in'></i> Login</button>
+        </form>
+        
+        <div class="forgot-link">
+            <a href="forgot-password.html"><i class='bx bx-key'></i> Forgot Password?</a>
+        </div>
+        
+        <div class="info-text">
+            <i class='bx bx-info-circle'></i> Default: admin@gmail.com | password: Admin@123
+        </div>
+    </div>
+
+    <script>
+        // Initialize admin account if not exists
+        function initAdminAccount() {
+            if (!localStorage.getItem('admin_account')) {
+                const adminAccount = {
+                    email: 'admin@gmail.com',
+                    password: 'Admin@123',
+                    name: 'Rahul Mahato',
+                    resetToken: null,
+                    resetExpiry: null
+                };
+                localStorage.setItem('admin_account', JSON.stringify(adminAccount));
+            }
+        }
+        initAdminAccount();
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const icon = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bx-show');
+                icon.classList.add('bx-hide');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bx-hide');
+                icon.classList.add('bx-show');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            const adminAccount = JSON.parse(localStorage.getItem('admin_account'));
+            
+            if (email === adminAccount.email && password === adminAccount.password) {
+                // Store session
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('adminEmail', email);
+                
+                // Show success
+                const successMsg = document.getElementById('successMsg');
+                successMsg.style.display = 'block';
+                successMsg.innerHTML = '<i class="bx bx-check-circle"></i> Login successful! Redirecting...';
+                
+                setTimeout(() => {
+                    window.location.href = 'admin-new.html';
+                }, 1500);
+            } else {
+                const errorMsg = document.getElementById('errorMsg');
+                errorMsg.style.display = 'block';
+                errorMsg.innerHTML = '<i class="bx bx-error"></i> Invalid email or password!';
+                
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

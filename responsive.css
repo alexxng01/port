@@ -1,0 +1,402 @@
+/* ==================== RESPONSIVE CSS ==================== */
+
+/* Extra Small Devices (max-width: 350px) */
+@media only screen and (max-width: 350px) {
+  .header {
+    padding: 15px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .burger {
+    display: block;
+    opacity: 1;
+  }
+  
+  .navbar {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    width: 100%;
+    background: #071b27;
+    flex-direction: column;
+    text-align: center;
+    transition: left 0.3s ease;
+  }
+  
+  .navbar.active {
+    left: 0;
+  }
+  
+  .navbar a {
+    margin: 8px 0;
+    font-size: 16px;
+  }
+  
+  .home {
+    flex-direction: column-reverse;
+    padding: 80px 15px 0;
+  }
+  
+  .home-content h1 {
+    font-size: 24px;
+  }
+  
+  .home-content h3 {
+    font-size: 18px;
+  }
+  
+  .home-content p {
+    font-size: 14px;
+  }
+  
+  .btn-box {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .round {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .sub-title {
+    font-size: 24px;
+  }
+  
+  .main-text h2 {
+    font-size: 24px;
+  }
+  
+  .about {
+    margin: 0 15px;
+  }
+  
+  .about-text h2 {
+    font-size: 28px;
+  }
+  
+  .container {
+    padding: 20px 15px;
+  }
+  
+  .container1 {
+    padding: 20px 15px;
+  }
+  
+  .services-list div {
+    padding: 20px;
+  }
+  
+  .services-list div h2 {
+    font-size: 20px;
+  }
+  
+  .portfolio-content {
+    padding: 15px;
+  }
+  
+  .row img {
+    height: 180px;
+  }
+  
+  .contact h2 {
+    font-size: 28px;
+  }
+  
+  .contact {
+    padding: 20px 15px;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .radial-bar {
+    width: 140px;
+  }
+}
+
+/* Medium Devices (max-width: 650px) */
+@media only screen and (max-width: 650px) {
+  .header {
+    padding: 15px 20px;
+  }
+  
+  .burger {
+    display: block;
+  }
+  
+  .navbar {
+    position: fixed;
+    top: 65px;
+    left: -100%;
+    width: 100%;
+    background: #071b27;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 0;
+    transition: left 0.3s ease;
+    z-index: 999;
+  }
+  
+  .navbar.active {
+    left: 0;
+  }
+  
+  .navbar a {
+    margin: 12px 0;
+    font-size: 18px;
+  }
+  
+  .btn-box {
+    padding: 8px 16px;
+  }
+  
+  .home {
+    flex-direction: column-reverse;
+    padding: 100px 20px 0;
+    text-align: center;
+  }
+  
+  .home-content h1 {
+    font-size: 32px;
+  }
+  
+  .home-content h3 {
+    font-size: 20px;
+  }
+  
+  .home-content p {
+    font-size: 15px;
+  }
+  
+  .round {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .about {
+    flex-direction: column;
+    margin: 0 20px;
+    text-align: center;
+  }
+  
+  .para {
+    flex-direction: column;
+  }
+  
+  .about-text h2 {
+    font-size: 36px;
+  }
+  
+  .about-text h4 {
+    font-size: 22px;
+  }
+  
+  .sub-title {
+    font-size: 36px;
+  }
+  
+  .main-text h2 {
+    font-size: 36px;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .services-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .portfolio-content {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  
+  .contact {
+    grid-template-columns: 1fr;
+    padding: 30px 20px;
+  }
+  
+  .contact h2 {
+    font-size: 36px;
+  }
+  
+  .container1 {
+    padding: 30px 20px;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .radial-bars {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .radial-bar {
+    margin: 15px auto;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .home-sci {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+/* Tablet Devices (651px - 1080px) */
+@media only screen and (min-width: 651px) and (max-width: 1080px) {
+  .header {
+    padding: 18px 5%;
+  }
+  
+  /* On tablet, navbar is visible by default */
+  .navbar {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: transparent;
+    width: auto;
+    height: auto;
+    gap: 25px;
+  }
+  
+  .navbar a {
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  /* Hide burger on tablet/desktop */
+  .burger {
+    display: none !important;
+  }
+  
+  .home {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 120px 5% 0;
+  }
+  
+  .home-content h1 {
+    font-size: 42px;
+  }
+  
+  .round {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .about {
+    flex-direction: column;
+    margin: 0 40px;
+    text-align: center;
+  }
+  
+  .para {
+    flex-direction: column;
+  }
+  
+  .sub-title {
+    font-size: 48px;
+  }
+  
+  .main-text h2 {
+    font-size: 48px;
+  }
+  
+  .container {
+    padding: 20px 5%;
+  }
+  
+  .portfolio-content {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 20px 5%;
+  }
+  
+  .contact {
+    grid-template-columns: 1fr;
+    padding: 40px 5%;
+  }
+  
+  .contact h2 {
+    font-size: 48px;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .home-sci {
+    justify-content: center;
+    display: flex;
+  }
+}
+
+/* Desktop (min-width: 1081px) */
+@media only screen and (min-width: 1081px) {
+  .navbar {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: transparent;
+    width: auto;
+    height: auto;
+  }
+  
+  .burger {
+    display: none !important;
+  }
+  
+  .home {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .about {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .para {
+    flex-direction: row;
+  }
+}
+
+/* Large Desktop (min-width: 1400px) */
+@media only screen and (min-width: 1400px) {
+  .container, .container1 {
+    padding: 20px 15%;
+  }
+  
+  .portfolio-content {
+    padding: 30px 15%;
+  }
+  
+  .home {
+    padding: 120px 15% 0;
+  }
+  
+  .about {
+    margin: 0 15%;
+  }
+}

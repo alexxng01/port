@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahul Kumar Mahato - Professional Portfolio</title>
+    <meta name="description" content="Full-Stack Developer & Designer portfolio showcasing projects and skills">
+    <meta name="author" content="Rahul Mahato">
+    <link rel="shortcut icon" href="./images/rahul.svg" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <!-- <style>
+        .img-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #0ef;
+            font-size: 40px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 250px;
+            width: 100%;
+            border-radius: 15px;
+        }
+        .img-fallback i {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        .profile-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0ef, #0066cc);
+            color: white;
+            font-size: 80px;
+            font-weight: bold;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    </style> -->
+</head>
+<body>
+    <!-- Header / Navbar Section -->
+    <section class="header">
+        <a href="#" class="logo">Portfolio</a>
+        <nav class="navbar">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#teamwork" class="nav-link">TeamWork</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <a href="login.html" class="admin-link">Admin Login</a>
+        </nav>
+        <div class="burger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </section>
+
+    <!-- Home Section -->
+    <section id="home" class="home">
+        <div class="home-content">
+            <h3>Hello, It's Me</h3>
+            <h1 id="adminNameDisplay">Rahul Mahato</h1>
+            <h3>And I'm a <span class="typed-text"></span></h3>
+            <p id="homeDescription">I'm a web Designer with extensive experience for over 2 months. Experience to create website design, Frontend design, and backend design.</p>
+            <div class="home-sci">
+                <a href="#" target="_blank" style="--i: 6"><i class="bx bxl-facebook"></i></a>
+                <a href="#" target="_blank" style="--i: 7"><i class="bx bxl-instagram"></i></a>
+                <a href="#" target="_blank" style="--i: 8"><i class="bx bxl-whatsapp"></i></a>
+                <a href="#" target="_blank" style="--i: 9"><i class="bx bxl-github"></i></a>
+                <a href="#" target="_blank" style="--i: 10"><i class="bx bxl-linkedin"></i></a>
+            </div>
+            <div class="hero-buttons">
+                <button class="btn-box" onclick="scrollToSection('projects')">View My Projects</button>
+                <button id="downloadCvBtn" class="btn-box" onclick="downloadCV()">Download CV</button>
+            </div>
+        </div>
+       <div class="img">
+    <img id="profileImage" class="round" src="./images/ME.jpeg" alt="Rahul Mahato" 
+         style="width: 370px; height: 370px; object-fit: cover; border-radius: 50%; display: block;">
+</div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-text">
+            <div class="abo">
+                <h2>About <span>Me</span></h2>
+                <div id="aboutContent">
+                    <h4>Full Stack Developer</h4>
+                </div>
+            </div>
+            <div class="para" id="aboutParagraphs">
+                <div class="first">
+                    <p class="about-paragraph">I'm a Computer Science student at <strong>Techspire College</strong> in Kathmandu, Nepal, with a deep passion for full-stack development and UI/UX design. I love turning complex problems into simple, beautiful, and intuitive solutions.</p>
+                    <p class="about-paragraph">My journey in technology started with curiosity about how things work behind the scenes. Now, I'm focused on building web applications that not only function well but also provide exceptional user experiences.</p>
+                    <p class="about-paragraph">When I'm not coding, you can find me exploring new design trends, contributing to open-source projects, or learning about emerging technologies in the tech ecosystem.</p>
+                </div>
+                <div class="second">
+                    <div class="about-sec">
+                        <div class="about-seco">
+                            <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Education</h3>
+                                <p class="card-text">Computer Science Student at Techspire College, Kathmandu</p>
+                            </div>
+                        </div>
+                        <div class="about-seco">
+                            <div class="card-icon"><i class="fas fa-code"></i></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Development Focus</h3>
+                                <p class="card-text">Full-stack web development with modern technologies</p>
+                            </div>
+                        </div>
+                        <div class="about-seco">
+                            <div class="card-icon"><i class="fas fa-palette"></i></div>
+                            <div class="card-content">
+                                <h3 class="card-title">Design Philosophy</h3>
+                                <p class="card-text">Creating intuitive and beautiful user interfaces</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="btn-box">More About Me</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h1 class="sub-title">My <span>Services</span></h1>
+            <div class="services-list" id="servicesList"></div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <h1 class="sub-title">My <span>Skills</span></h1>
+        <div class="container1">
+            <div class="Techinical-bars" id="technicalSkills"></div>
+            <div class="radial-bars" id="professionalSkills"></div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="main-text">
+            <h2>Latest <span>Projects</span></h2>
+            <div class="portfolio-content" id="projectsList"></div>
+        </div>
+    </section>
+
+    <!-- TeamWork Section -->
+    <section id="teamwork">
+        <div class="main-text">
+            <h2>Team <span>Work</span></h2>
+            <div class="portfolio-content" id="teamworkList"></div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div id="contactFormContainer"></div>
+    </section>
+
+    <!-- Footer -->
+    <div class="last-text">
+        <p><i class='bx bxl-dev-to' style="color:#08f6d9"></i> By Rahul Mahato | © 2024 All Rights Reserved</p>
+    </div>
+    <a href="#" class="top"><i class="bx bx-up-arrow-alt"></i></a>
+
+    <script>
+        // ==================== INITIALIZE DEFAULT DATA ====================
+        function initializeDefaultData() {
+            // Profile Data
+            if (!localStorage.getItem('portfolio_profile')) {
+                localStorage.setItem('portfolio_profile', JSON.stringify({
+                    name: 'Rahul Mahato',
+                    title: 'Full Stack Developer',
+                    bio: 'I\'m a web Designer with extensive experience for over 2 months.',
+                    image: './images/ME.jpeg',
+                    cv: 'cv/cv-3.docx',
+                    email: 'rm91275@gmail.com',
+                    phone: '+977 98XXXXXXXX',
+                    address: 'Kathmandu, Nepal'
+                }));
+            }
+
+            // Admin Account
+            if (!localStorage.getItem('admin_account')) {
+                localStorage.setItem('admin_account', JSON.stringify({
+                    email: 'rm91275@gmail.com',
+                    password: 'Admin@123',
+                    name: 'Rahul Mahato'
+                }));
+            }
+
+            // About Data
+            if (!localStorage.getItem('portfolio_about')) {
+                localStorage.setItem('portfolio_about', JSON.stringify({
+                    mainText: 'Full Stack Developer',
+                    paragraphs: [
+                        "I'm a Computer Science student at Techspire College in Kathmandu, Nepal.",
+                        "My journey in technology started with curiosity about how things work.",
+                        "When I'm not coding, you can find me exploring new design trends."
+                    ]
+                }));
+            }
+
+            // Services Data
+            if (!localStorage.getItem('portfolio_services')) {
+                localStorage.setItem('portfolio_services', JSON.stringify([
+                    { id: 1, icon: 'bx bx-code', title: 'Web Development', description: 'Modern responsive websites built with latest technologies.' },
+                    { id: 2, icon: 'bx bx-crop', title: 'UI/UX Design', description: 'Beautiful, intuitive interfaces that users love.' },
+                    { id: 3, icon: 'bx bxl-apple', title: 'App Design', description: 'Mobile-first design that works on all devices.' }
+                ]));
+            }
+
+            // Technical Skills
+            if (!localStorage.getItem('portfolio_skills_technical')) {
+                localStorage.setItem('portfolio_skills_technical', JSON.stringify([
+                    { id: 1, name: 'HTML5', level: 90, icon: 'bx bxl-html5' },
+                    { id: 2, name: 'CSS3', level: 85, icon: 'bx bxl-css3' },
+                    { id: 3, name: 'JavaScript', level: 80, icon: 'bx bxl-javascript' },
+                    { id: 4, name: 'React.js', level: 75, icon: 'bx bxl-react' },
+                    { id: 5, name: 'Python', level: 85, icon: 'bx bxl-python' },
+                    { id: 6, name: 'Node.js', level: 70, icon: 'bx bxl-nodejs' }
+                ]));
+            }
+
+            // Professional Skills
+            if (!localStorage.getItem('portfolio_skills_professional')) {
+                localStorage.setItem('portfolio_skills_professional', JSON.stringify([
+                    { id: 1, name: 'Creativity', level: 90 },
+                    { id: 2, name: 'Communication', level: 65 },
+                    { id: 3, name: 'Problem Solving', level: 85 },
+                    { id: 4, name: 'Team Work', level: 89 }
+                ]));
+            }
+
+            // Projects Data
+            if (!localStorage.getItem('portfolio_projects')) {
+                localStorage.setItem('portfolio_projects', JSON.stringify([
+                    { id: 1, title: 'E-Commerce Dashboard', description: 'A modern admin dashboard for managing online stores.', image: 'images/E-comerce.png', technologies: ['React', 'Node.js', 'MongoDB'] },
+                    { id: 2, title: 'Task Management App', description: 'Collaborative task management application.', image: 'images/task-management.png', technologies: ['Vue.js', 'Express', 'PostgreSQL'] },
+                    { id: 3, title: 'Portfolio Website', description: 'Responsive portfolio website with modern animations.', image: 'images/website.png', technologies: ['HTML', 'CSS', 'JavaScript'] }
+                ]));
+            }
+
+            // TeamWork Data
+            if (!localStorage.getItem('portfolio_teamwork')) {
+                localStorage.setItem('portfolio_teamwork', JSON.stringify([
+                    { id: 1, title: 'Open Source Contribution', description: 'Collaborated with global developers on open-source projects.', image: '', role: 'Contributor' },
+                    { id: 2, title: 'Hackathon Winner', description: 'Team project that won first place at college hackathon.', image: '', role: 'Team Lead' },
+                    { id: 3, title: 'Group Project', description: 'Successfully delivered full-stack application as a team.', image: '', role: 'Developer' }
+                ]));
+            }
+
+            // Contact Messages
+            if (!localStorage.getItem('contact_messages')) {
+                localStorage.setItem('contact_messages', JSON.stringify([]));
+            }
+        }
+
+        // Load Profile Data
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('portfolio_profile'));
+            if (profile) {
+                const nameDisplay = document.getElementById('adminNameDisplay');
+                const homeDesc = document.getElementById('homeDescription');
+                const profileImg = document.getElementById('profileImage');
+                
+                if (nameDisplay) nameDisplay.innerText = profile.name;
+                if (homeDesc) homeDesc.innerText = profile.bio;
+                if (profileImg && profile.image) {
+                    profileImg.src = profile.image;
+                    profileImg.onerror = function() {
+                        this.style.display = 'none';
+                        const parent = this.parentElement;
+                        const fallback = document.createElement('div');
+                        fallback.className = 'round profile-fallback';
+                        fallback.innerHTML = '<i class="bx bx-user" style="font-size: 80px;"></i>';
+                        parent.appendChild(fallback);
+                    };
+                }
+            }
+        }
+
+        // Load About Data
+        function loadAbout() {
+            const about = JSON.parse(localStorage.getItem('portfolio_about'));
+            if (about) {
+                const aboutContent = document.getElementById('aboutContent');
+                if (aboutContent) {
+                    aboutContent.innerHTML = '<h4>' + escapeHtml(about.mainText) + '</h4>';
+                }
+                
+                const paraContainer = document.getElementById('aboutParagraphs');
+                if (paraContainer && about.paragraphs) {
+                    const firstDiv = paraContainer.querySelector('.first');
+                    if (firstDiv) {
+                        firstDiv.innerHTML = about.paragraphs.map(function(p) {
+                            return '<p class="about-paragraph">' + escapeHtml(p) + '</p>';
+                        }).join('');
+                    }
+                }
+            }
+        }
+
+        // Load Services
+        function loadServices() {
+            const services = JSON.parse(localStorage.getItem('portfolio_services')) || [];
+            const container = document.getElementById('servicesList');
+            if (container) {
+                container.innerHTML = services.map(function(s) {
+                    return '<div><i class="' + s.icon + '" style="color: #08f6d9; font-size: 50px;"></i><h2>' + escapeHtml(s.title) + '</h2><p>' + escapeHtml(s.description) + '</p><a href="#" class="read">Learn More</a></div>';
+                }).join('');
+            }
+        }
+
+        // Load Technical Skills
+        function loadTechnicalSkills() {
+            const skills = JSON.parse(localStorage.getItem('portfolio_skills_technical')) || [];
+            const container = document.getElementById('technicalSkills');
+            if (container) {
+                container.innerHTML = '<div class="skill-category"><h3 class="category-title"><i class="bx bx-code-alt"></i> Technical Skills</h3>' + skills.map(function(s) {
+                    return '<div class="bar"><i class="' + s.icon + '" style="color: #0ef;"></i><div class="indfo"><span>' + escapeHtml(s.name) + '</span></div><div class="progress-line"><span style="width: ' + s.level + '%"></span></div></div>';
+                }).join('') + '</div>';
+            }
+        }
+
+        // Load Professional Skills
+        function loadProfessionalSkills() {
+            const skills = JSON.parse(localStorage.getItem('portfolio_skills_professional')) || [];
+            const container = document.getElementById('professionalSkills');
+            if (container) {
+                container.innerHTML = skills.map(function(s) {
+                    var circumference = 502;
+                    var offset = circumference - (circumference * s.level / 100);
+                    return '<div class="radial-bar"><svg viewBox="0 0 200 200"><circle class="progress-bar" cx="100" cy="100" r="80"></circle><circle class="path" cx="100" cy="100" r="80" style="stroke-dashoffset: ' + offset + '"></circle></svg><div class="percentage">' + s.level + '%</div><div class="text">' + escapeHtml(s.name) + '</div></div>';
+                }).join('');
+            }
+        }
+
+        // Load Projects
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem('portfolio_projects')) || [];
+            const container = document.getElementById('projectsList');
+            if (container) {
+                container.innerHTML = projects.map(function(p) {
+                    return '<div class="row"><img src="' + (p.image || '') + '" alt="' + escapeHtml(p.title) + '" onerror="this.style.display=\'none\'; this.parentElement.insertAdjacentHTML(\'afterbegin\', \'<div class=\\\'img-fallback\\\' style=\\\'height:280px; display:flex; flex-direction:column;\\\'><i class=\\\'bx bx-code-alt\\\' style=\\\'font-size:60px;\\\'></i><span>' + escapeHtml(p.title) + '</span></div>\')"><div class="layer"><h5>' + escapeHtml(p.title) + '</h5><p>' + escapeHtml(p.description.substring(0, 100)) + '...</p><div class="project-tech">' + (p.technologies || []).map(function(tech) { return '<span class="tech-tag">' + escapeHtml(tech) + '</span>'; }).join('') + '</div></div></div>';
+                }).join('');
+            }
+        }
+
+        // Load Teamwork
+        function loadTeamwork() {
+            const teamwork = JSON.parse(localStorage.getItem('portfolio_teamwork')) || [];
+            const container = document.getElementById('teamworkList');
+            if (container) {
+                container.innerHTML = teamwork.map(function(t) {
+                    return '<div class="row"><img src="' + (t.image || '') + '" alt="' + escapeHtml(t.title) + '" onerror="this.style.display=\'none\'; this.parentElement.insertAdjacentHTML(\'afterbegin\', \'<div class=\\\'img-fallback\\\' style=\\\'height:280px; display:flex; flex-direction:column;\\\'><i class=\\\'bx bx-group\\\' style=\\\'font-size:60px;\\\'></i><span>' + escapeHtml(t.title) + '</span></div>\')"><div class="layer"><h5>' + escapeHtml(t.title) + '</h5><p>' + escapeHtml(t.description.substring(0, 100)) + '...</p><p><small><i class="bx bx-user"></i> Role: ' + escapeHtml(t.role || 'Member') + '</small></p></div></div>';
+                }).join('');
+            }
+        }
+
+        // Load Contact Form
+        function loadContactForm() {
+            const profile = JSON.parse(localStorage.getItem('portfolio_profile')) || {};
+            const container = document.getElementById('contactFormContainer');
+            if (container) {
+                container.innerHTML = '<div class="contact"><div class="contact-form"><h2>Contact <span>Me</span></h2><form onsubmit="submitContact(event)"><div class="form-group"><input type="text" id="contactName" placeholder="Your Name" required></div><div class="form-group"><input type="email" id="contactEmail" placeholder="Your Email" required></div><div class="form-group"><textarea id="contactMessage" placeholder="Your Message" rows="5" required></textarea></div><button type="submit" class="btn-box">Send Message</button></form></div><div class="contact-info"><h3><i class="bx bx-info-circle"></i> Get in Touch</h3><p><i class="bx bx-envelope"></i> ' + (profile.email || 'rm91275@gmail.com') + '</p><p><i class="bx bx-phone"></i> ' + (profile.phone || '+977 98XXXXXXXX') + '</p><p><i class="bx bx-map"></i> ' + (profile.address || 'Kathmandu, Nepal') + '</p><div class="social-icons"><a href="#"><i class="bx bxl-facebook"></i></a><a href="#"><i class="bx bxl-instagram"></i></a><a href="#"><i class="bx bxl-linkedin"></i></a><a href="#"><i class="bx bxl-github"></i></a></div></div></div>';
+            }
+        }
+
+        // Submit Contact Form
+        window.submitContact = function(event) {
+            event.preventDefault();
+            var name = document.getElementById('contactName') ? document.getElementById('contactName').value : '';
+            var email = document.getElementById('contactEmail') ? document.getElementById('contactEmail').value : '';
+            var message = document.getElementById('contactMessage') ? document.getElementById('contactMessage').value : '';
+            
+            if (name && email && message) {
+                var messages = JSON.parse(localStorage.getItem('contact_messages')) || [];
+                messages.push({
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    message: message,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('contact_messages', JSON.stringify(messages));
+                alert('Thank you! Your message has been sent successfully.');
+                event.target.reset();
+            } else {
+                alert('Please fill all fields.');
+            }
+        };
+
+        // Scroll to section
+        window.scrollToSection = function(sectionId) {
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        // Download CV
+        window.downloadCV = function() {
+            var profile = JSON.parse(localStorage.getItem('portfolio_profile')) || {};
+            var cvUrl = profile.cv || 'cv/cv-3.docx';
+            window.open(cvUrl, '_blank');
+        };
+
+        // Escape HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Active Navbar on Scroll
+        function setActiveNavLink() {
+            var sections = document.querySelectorAll('section');
+            var navLinks = document.querySelectorAll('.nav-link');
+            var current = '';
+            var scrollY = window.scrollY;
+            
+            for (var i = 0; i < sections.length; i++) {
+                var section = sections[i];
+                var sectionTop = section.offsetTop - 120;
+                var sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            }
+            
+            for (var j = 0; j < navLinks.length; j++) {
+                var link = navLinks[j];
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            }
+        }
+
+        // Burger Menu Toggle
+        function initBurgerMenu() {
+            var burger = document.querySelector('.burger');
+            var navbar = document.querySelector('.navbar');
+            
+            if (burger && navbar) {
+                burger.addEventListener('click', function() {
+                    navbar.classList.toggle('active');
+                    burger.classList.toggle('active');
+                });
+                
+                var navLinks = document.querySelectorAll('.navbar a');
+                for (var i = 0; i < navLinks.length; i++) {
+                    navLinks[i].addEventListener('click', function() {
+                        navbar.classList.remove('active');
+                        burger.classList.remove('active');
+                    });
+                }
+            }
+        }
+
+        // Smooth scroll
+        function initSmoothScroll() {
+            var links = document.querySelectorAll('a[href^="#"]');
+            for (var i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+        }
+
+        // Initialize Typed.js
+        function initTyped() {
+            if (typeof Typed !== 'undefined') {
+                new Typed('.typed-text', {
+                    strings: ['Full Stack Developer', 'UI/UX Designer', 'Problem Solver', 'Tech Enthusiast'],
+                    typeSpeed: 100,
+                    backSpeed: 60,
+                    loop: true
+                });
+            }
+        }
+
+        // Load all content when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDefaultData();
+            loadProfile();
+            loadAbout();
+            loadServices();
+            loadTechnicalSkills();
+            loadProfessionalSkills();
+            loadProjects();
+            loadTeamwork();
+            loadContactForm();
+            initTyped();
+            initBurgerMenu();
+            initSmoothScroll();
+            
+            window.addEventListener('scroll', setActiveNavLink);
+            setActiveNavLink();
+        });
+    </script>
+</body>
+</html>

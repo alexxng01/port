@@ -1,31 +1,11 @@
-# Dependencies
-node_modules/
-
-# OS files
+# .gitignore
+.env
 .DS_Store
 Thumbs.db
-
-# IDE files
+*.log
+node_modules/
 .vscode/
 .idea/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Environment files
-.env
-.env.local
-
-# Backup files
+portfolio_data.json
 *.backup
 *.tmp
-
-# Database files (if any)
-*.db
-*.sqlite
-
-# Large files
-*.zip
-*.rar
-*.7z

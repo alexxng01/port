@@ -1,4 +1,5 @@
-// server.js - Complete Backend Server with Network Support
+// server.js - Updated to use environment variables
+require('dotenv').config();
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
@@ -9,6 +10,7 @@ const os = require('os');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Get local network IP addresses
 function getLocalIPs() {
@@ -24,24 +26,31 @@ function getLocalIPs() {
     return ips;
 }
 
-// Middleware - Allow all origins for network access
+// Middleware
 app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: process.env.CORS_METHODS?.split(',') || ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-app.use(express.static('public'));
-app.use('/cv', express.static('cv'));
-app.use('/images', express.static('public/images'));
+app.use(express.urlencoded({ extended: true }));
 
-// Get client IP address
-app.get('/api/get-ip', (req, res) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    res.json({ ip: ip });
+// Serve static files
+app.use(express.static('public'));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/cv', express.static(path.join(__dirname, 'cv')));
+
+// Favicon
+app.get('/favicon.ico', (req, res) => {
+    const faviconPath = path.join(__dirname, 'public/images/rahul.svg');
+    if (fs.existsSync(faviconPath)) {
+        res.sendFile(faviconPath);
+    } else {
+        res.status(204).end();
+    }
 });
 
-// File upload configuration
+// File upload
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = 'public/uploads';
@@ -52,14 +61,17 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5242880 }
+});
 
-// Initialize SQLite Database
-const db = new sqlite3.Database('./database.sqlite');
+// Database path based on environment
+const dbPath = process.env.DATABASE_PATH || './database.sqlite';
+const db = new sqlite3.Database(dbPath);
 
 // Create tables
 db.serialize(() => {
-    // Portfolio data table
     db.run(`CREATE TABLE IF NOT EXISTS portfolio_data (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         data_key TEXT UNIQUE,
@@ -67,7 +79,6 @@ db.serialize(() => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
     
-    // Contact messages table
     db.run(`CREATE TABLE IF NOT EXISTS contact_messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -76,7 +87,6 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
     
-    // Admin users table
     db.run(`CREATE TABLE IF NOT EXISTS admin_users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE,
@@ -84,7 +94,6 @@ db.serialize(() => {
         name TEXT
     )`);
     
-    // Visitors table
     db.run(`CREATE TABLE IF NOT EXISTS visitors (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ip TEXT,
@@ -96,11 +105,16 @@ db.serialize(() => {
         visit_time DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
     
-    // Insert default admin (password: admin123)
-    db.get("SELECT * FROM admin_users WHERE email = 'admin@gmail.com'", (err, row) => {
-        if (!row) {
+    // Insert default admin
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@gmail.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminName = process.env.ADMIN_NAME || 'Admin User';
+    
+    db.get("SELECT * FROM admin_users WHERE email = ?", [adminEmail], (err, row) => {
+        if (!row && !err) {
             db.run("INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)", 
-                ['admin@gmail.com', 'admin123', 'Admin User']);
+                [adminEmail, adminPassword, adminName]);
+            console.log('✅ Default admin user created');
         }
     });
     
@@ -112,7 +126,7 @@ db.serialize(() => {
             bio: 'I\'m a web Designer with extensive experience.',
             image: '/images/ME.jpeg',
             cv: '/cv/cv-3.docx',
-            email: 'admin@gmail.com',
+            email: adminEmail,
             phone: '+977 98XXXXXXXX',
             address: 'Kathmandu, Nepal'
         },
@@ -154,7 +168,7 @@ db.serialize(() => {
     
     for (const [key, value] of Object.entries(defaultData)) {
         db.get("SELECT * FROM portfolio_data WHERE data_key = ?", [key], (err, row) => {
-            if (!row) {
+            if (!row && !err) {
                 db.run("INSERT INTO portfolio_data (data_key, data_value) VALUES (?, ?)", 
                     [key, JSON.stringify(value)]);
             }
@@ -164,7 +178,6 @@ db.serialize(() => {
 
 // ==================== API ROUTES ====================
 
-// Get all portfolio data
 app.get('/api/data', (req, res) => {
     db.all("SELECT data_key, data_value FROM portfolio_data", (err, rows) => {
         if (err) {
@@ -173,13 +186,16 @@ app.get('/api/data', (req, res) => {
         }
         const data = {};
         rows.forEach(row => {
-            data[row.data_key] = JSON.parse(row.data_value);
+            try {
+                data[row.data_key] = JSON.parse(row.data_value);
+            } catch(e) {
+                data[row.data_key] = row.data_value;
+            }
         });
         res.json(data);
     });
 });
 
-// Save portfolio data
 app.post('/api/data', (req, res) => {
     const { key, value } = req.body;
     db.run("INSERT OR REPLACE INTO portfolio_data (data_key, data_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)",
@@ -192,7 +208,6 @@ app.post('/api/data', (req, res) => {
         });
 });
 
-// Delete portfolio data
 app.delete('/api/data', (req, res) => {
     const { key } = req.body;
     db.run("DELETE FROM portfolio_data WHERE data_key = ?", [key], (err) => {
@@ -204,26 +219,29 @@ app.delete('/api/data', (req, res) => {
     });
 });
 
-// Admin login
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
+    console.log('Login attempt:', email);
+    
     db.get("SELECT * FROM admin_users WHERE email = ? AND password = ?", [email, password], (err, user) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            console.error('Database error:', err);
+            res.status(500).json({ success: false, message: 'Database error' });
             return;
         }
         if (user) {
+            console.log('Login successful:', email);
             res.json({ success: true, user: { name: user.name, email: user.email } });
         } else {
+            console.log('Login failed:', email);
             res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
     });
 });
 
-// Save contact message
 app.post('/api/contact', (req, res) => {
     const { name, email, message } = req.body;
-    db.run("INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
+    db.run("INSERT INTO contact_messages (name, email, message, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
         [name, email, message], (err) => {
             if (err) {
                 res.status(500).json({ error: err.message });
@@ -233,7 +251,6 @@ app.post('/api/contact', (req, res) => {
         });
 });
 
-// Get contact messages
 app.get('/api/contact', (req, res) => {
     db.all("SELECT * FROM contact_messages ORDER BY created_at DESC", (err, rows) => {
         if (err) {
@@ -244,28 +261,24 @@ app.get('/api/contact', (req, res) => {
     });
 });
 
-// Track visitor
 app.post('/api/visitor', (req, res) => {
-    const { ip, city, country, device, browser } = req.body;
+    const { device, browser } = req.body;
     const today = new Date().toISOString().split('T')[0];
-    const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || ip;
+    const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     
     db.get("SELECT * FROM visitors WHERE ip = ? AND visit_date = ?", [clientIp, today], (err, existing) => {
-        if (!existing) {
-            db.run("INSERT INTO visitors (ip, city, country, device, browser, visit_date) VALUES (?, ?, ?, ?, ?, ?)",
-                [clientIp, city || 'Unknown', country || 'Unknown', device || 'Desktop', browser || 'Unknown', today], (err) => {
-                    if (err) console.error('Visitor tracking error:', err);
-                });
+        if (!existing && !err) {
+            db.run("INSERT INTO visitors (ip, device, browser, visit_date) VALUES (?, ?, ?, ?)",
+                [clientIp, device || 'Desktop', browser || 'Unknown', today]);
         }
     });
     res.json({ success: true });
 });
 
-// Get visitor stats
 app.get('/api/stats', (req, res) => {
     db.get("SELECT COUNT(*) as total FROM visitors", (err, total) => {
         db.get("SELECT COUNT(*) as today FROM visitors WHERE visit_date = date('now')", (err, today) => {
-            db.all("SELECT city, country, device, visit_time FROM visitors ORDER BY id DESC LIMIT 10", (err, recent) => {
+            db.all("SELECT ip, device, visit_time FROM visitors ORDER BY id DESC LIMIT 10", (err, recent) => {
                 res.json({
                     total: total?.total || 0,
                     today: today?.today || 0,
@@ -276,7 +289,6 @@ app.get('/api/stats', (req, res) => {
     });
 });
 
-// Image upload
 app.post('/api/upload', upload.single('image'), (req, res) => {
     if (req.file) {
         res.json({ success: true, url: '/uploads/' + req.file.filename });
@@ -285,35 +297,69 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
     }
 });
 
-// Get server network info
 app.get('/api/network-info', (req, res) => {
     const ips = getLocalIPs();
     res.json({
         localhost: `http://localhost:${PORT}`,
         network: ips.map(ip => `http://${ip}:${PORT}`),
         port: PORT,
-        ips: ips
+        ips: ips,
+        environment: NODE_ENV
     });
 });
 
-// Serve index.html for all other routes
-app.get('*', (req, res) => {
+// ==================== HTML ROUTES ====================
+
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server on all network interfaces
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/network-info.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'network-info.html'));
+});
+
+// 404 handler
+app.use((req, res) => {
+    if (req.path.startsWith('/api/')) {
+        res.status(404).json({ error: 'API endpoint not found' });
+        return;
+    }
+    res.status(404).sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+});
+
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
     const ips = getLocalIPs();
-    console.log('\n🚀 Server is running!\n');
+    console.log('\n✅ ========================================');
+    console.log(`🚀 PORTFOLIO CMS SERVER RUNNING (${NODE_ENV})`);
+    console.log('========================================\n');
     console.log(`📱 Local access:    http://localhost:${PORT}`);
-    console.log(`📱 Admin login:     http://localhost:${PORT}/login.html`);
-    if (ips.length > 0) {
+    console.log(`🔐 Admin login:     http://localhost:${PORT}/login.html`);
+    console.log(`📊 Admin panel:     http://localhost:${PORT}/admin.html`);
+    if (ips.length > 0 && NODE_ENV === 'development') {
         console.log(`\n📡 Network access (for other devices):`);
         ips.forEach(ip => {
             console.log(`   → http://${ip}:${PORT}`);
-            console.log(`   → http://${ip}:${PORT}/login.html`);
         });
     }
-    console.log(`\n🔐 Login: admin@gmail.com / admin123`);
-    console.log(`💾 Database: SQLite (database.sqlite)\n`);
+    if (process.env.SITE_URL) {
+        console.log(`\n🌐 Production URL: ${process.env.SITE_URL}`);
+    }
+    console.log(`\n🔐 Default Login: ${process.env.ADMIN_EMAIL || 'admin@gmail.com'} / ${process.env.ADMIN_PASSWORD || 'admin123'}`);
+    console.log(`💾 Database: ${dbPath}`);
+    console.log('========================================\n');
 });

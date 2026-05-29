@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a2a; color: #fff; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: #1a1a3a; padding: 25px; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar h2 { color: #0ef; margin-bottom: 30px; text-align: center; }
+        .sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #fff; text-decoration: none; border-radius: 10px; margin: 5px 0; cursor: pointer; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: #0ef; color: #1a1a3a; }
+        .main-content { flex: 1; margin-left: 280px; padding: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: linear-gradient(135deg, #1e1e3e, #16213e); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 1px solid #2d2d4a; }
+        .stat-card p { font-size: 32px; font-weight: bold; color: #0ef; }
+        .form-container { background: #1e1e3e; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #2d2d4a; }
+        .form-container h3 { margin-bottom: 20px; color: #0ef; border-bottom: 1px solid #2d2d4a; padding-bottom: 10px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #0ef; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; background: #2a2a4a; border: 1px solid #3a3a5a; border-radius: 8px; color: #fff; }
+        .btn-primary { background: linear-gradient(90deg, #0ef, #00a3c4); color: #1a1a3a; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-danger { background: #ff4757; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px; }
+        .btn-edit { background: #ffa502; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        .data-table { background: #1e1e3e; border-radius: 15px; overflow-x: auto; margin-top: 20px; }
+        .data-table th, .data-table td { padding: 12px; text-align: left; border-bottom: 1px solid #2d2d4a; }
+        .data-table th { background: #2a2a4a; color: #0ef; }
+        .skill-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+        .skill-item-row input { flex: 1; padding: 10px; background: #2a2a4a; border-radius: 8px; color: #fff; border: 1px solid #3a3a5a; }
+        .welcome-banner { background: linear-gradient(135deg, #0ef, #0066cc); padding: 20px; border-radius: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; }
+        .alert { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px; z-index: 2000; animation: slideDown 0.3s; }
+        .alert-success { background: rgba(0,214,143,0.95); color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1e1e3e; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 1px solid #0ef; }
+        .close-modal { float: right; font-size: 28px; cursor: pointer; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar h2 span, .sidebar nav a span { display: none; } .main-content { margin-left: 70px; padding: 15px; } }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <div class="sidebar">
+            <h2><i class='bx bx-code-alt'></i> <span>CMS</span></h2>
+            <nav>
+                <a onclick="showSection('dashboard')" class="active"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></a>
+                <a onclick="showSection('profile')"><i class='bx bxs-user'></i> <span>Profile</span></a>
+                <a onclick="showSection('about')"><i class='bx bxs-info-circle'></i> <span>About</span></a>
+                <a onclick="showSection('services')"><i class='bx bxs-briefcase'></i> <span>Services</span></a>
+                <a onclick="showSection('skills')"><i class='bx bxs-cog'></i> <span>Skills</span></a>
+                <a onclick="showSection('projects')"><i class='bx bxs-folder-open'></i> <span>Projects</span></a>
+                <a onclick="showSection('teamwork')"><i class='bx bxs-group'></i> <span>TeamWork</span></a>
+                <a onclick="showSection('contact')"><i class='bx bxs-envelope'></i> <span>Contact</span></a>
+                <a href="/" target="_blank"><i class='bx bxs-show'></i> <span>View Site</span></a>
+                <a onclick="logout()"><i class='bx bxs-log-out'></i> <span>Logout</span></a>
+            </nav>
+        </div>
+        <div class="main-content" id="mainContent"><div style="text-align:center;padding:50px;">Loading...</div></div>
+    </div>
+    <div id="editModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal()">&times;</span><h3 id="modalTitle">Edit</h3><div id="modalBody"></div><button class="btn-primary" onclick="saveEdit()">Save</button></div></div>
+
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') window.location.href = '/login.html';
+        
+        const API_URL = '/api';
+        let currentEditType = null, currentEditIndex = null;
+        let portfolioData = { profile: {}, about: {}, services: [], technicalSkills: [], professionalSkills: [], projects: [], teamwork: [] };
+        
+        function showAlert(msg, type = 'success') { const d = document.createElement('div'); d.className = `alert alert-${type}`; d.innerHTML = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 3000); }
+        function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+        
+        async function loadData() {
+            try {
+                const res = await fetch(`${API_URL}/data`);
+                const data = await res.json();
+                portfolioData = {
+                    profile: data.portfolio_profile || {},
+                    about: data.portfolio_about || {},
+                    services: data.portfolio_services || [],
+                    technicalSkills: data.portfolio_skills_technical || [],
+                    professionalSkills: data.portfolio_skills_professional || [],
+                    projects: data.portfolio_projects || [],
+                    teamwork: data.portfolio_teamwork || []
+                };
+                return true;
+            } catch(e) { console.error(e); return false; }
+        }
+        
+        async function saveToServer(key, value) {
+            try {
+                const res = await fetch(`${API_URL}/data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key, value })
+                });
+                if (res.ok) { showAlert(`✅ ${key} saved!`); return true; }
+            } catch(e) { showAlert('Save failed', 'error'); }
+            return false;
+        }
+        
+        async function showSection(section) {
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            if (event && event.target) event.target.closest('a').classList.add('active');
+            await loadData();
+            const content = document.getElementById('mainContent');
+            if (section === 'dashboard') content.innerHTML = renderDashboard();
+            else if (section === 'profile') content.innerHTML = renderProfile();
+            else if (section === 'about') content.innerHTML = renderAbout();
+            else if (section === 'services') content.innerHTML = renderServices();
+            else if (section === 'skills') content.innerHTML = renderSkills();
+            else if (section === 'projects') content.innerHTML = renderProjects();
+            else if (section === 'teamwork') content.innerHTML = renderTeamwork();
+            else if (section === 'contact') content.innerHTML = renderContact();
+        }
+        
+        function renderDashboard() {
+            return `<div class="welcome-banner"><div><h3>Welcome, ${escapeHtml(portfolioData.profile.name || 'Admin')}!</h3><p>Data saved to SQLite Database</p></div><div><div>${new Date().toLocaleString()}</div></div></div>
+            <div class="stats-grid"><div class="stat-card" onclick="showSection('profile')"><h3>Profile</h3><p>✅</p></div>
+            <div class="stat-card" onclick="showSection('services')"><h3>Services</h3><p>${portfolioData.services.length}</p></div>
+            <div class="stat-card" onclick="showSection('projects')"><h3>Projects</h3><p>${portfolioData.projects.length}</p></div>
+            <div class="stat-card" onclick="showSection('skills')"><h3>Skills</h3><p>${portfolioData.technicalSkills.length}</p></div></div>
+            <div class="form-container"><h3>Database Status</h3><p>✅ Connected to SQLite Database<br>📁 Data persists after server restart<br>🔐 Admin: admin@gmail.com / admin123</p></div>`;
+        }
+        
+        function renderProfile() {
+            const p = portfolioData.profile;
+            return `<div class="form-container"><h3>Edit Profile</h3>
+                <div class="form-group"><label>Name</label><input type="text" id="profileName" value="${escapeHtml(p.name || '')}"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="profileTitle" value="${escapeHtml(p.title || '')}"></div>
+                <div class="form-group"><label>Bio</label><textarea id="profileBio" rows="3">${escapeHtml(p.bio || '')}</textarea></div>
+                <div class="form-group"><label>Image URL</label><input type="text" id="profileImage" value="${p.image || ''}"></div>
+                <div class="form-group"><label>CV URL</label><input type="text" id="profileCV" value="${p.cv || ''}"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="profileEmail" value="${p.email || ''}"></div>
+                <div class="form-group"><label>Phone</label><input type="text" id="profilePhone" value="${p.phone || ''}"></div>
+                <div class="form-group"><label>Address</label><input type="text" id="profileAddress" value="${p.address || ''}"></div>
+                <button class="btn-primary" onclick="saveProfile()">Save Profile</button></div>`;
+        }
+        
+        async function saveProfile() {
+            const profile = {
+                name: document.getElementById('profileName').value,
+                title: document.getElementById('profileTitle').value,
+                bio: document.getElementById('profileBio').value,
+                image: document.getElementById('profileImage').value,
+                cv: document.getElementById('profileCV').value,
+                email: document.getElementById('profileEmail').value,
+                phone: document.getElementById('profilePhone').value,
+                address: document.getElementById('profileAddress').value
+            };
+            if (await saveToServer('portfolio_profile', profile)) showSection('profile');
+        }
+        
+        function renderAbout() {
+            const a = portfolioData.about;
+            const paras = a.paragraphs || ['', '', ''];
+            return `<div class="form-container"><h3>Edit About</h3>
+                <div class="form-group"><label>Subtitle</label><input type="text" id="aboutSubtitle" value="${escapeHtml(a.mainText || '')}"></div>
+                <div class="form-group"><label>Paragraph 1</label><textarea id="aboutPara1" rows="3">${escapeHtml(paras[0] || '')}</textarea></div>
+                <div class="form-group"><label>Paragraph 2</label><textarea id="aboutPara2" rows="3">${escapeHtml(paras[1] || '')}</textarea></div>
+                <div class="form-group"><label>Paragraph 3</label><textarea id="aboutPara3" rows="3">${escapeHtml(paras[2] || '')}</textarea></div>
+                <button class="btn-primary" onclick="saveAbout()">Save About</button></div>`;
+        }
+        
+        async function saveAbout() {
+            const about = {
+                mainText: document.getElementById('aboutSubtitle').value,
+                paragraphs: [document.getElementById('aboutPara1').value, document.getElementById('aboutPara2').value, document.getElementById('aboutPara3').value]
+            };
+            if (await saveToServer('portfolio_about', about)) showSection('about');
+        }
+        
+        function renderServices() {
+            return `<div class="form-container"><h3>Add Service</h3>
+                <div class="form-group"><label>Icon</label><input type="text" id="newIcon" value="bx bx-code"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="newTitle"></div>
+                <div class="form-group"><label>Description</label><textarea id="newDesc" rows="2"></textarea></div>
+                <button class="btn-primary" onclick="addService()">+ Add</button></div>
+                <div class="data-table"><h3>Services (${portfolioData.services.length})</h3><table><thead><tr><th>Icon</th><th>Title</th><th>Actions</th></tr></thead><tbody>${portfolioData.services.map((s, i) => `<tr><td><i class='${s.icon}' style="font-size:24px;color:#0ef;"></i></td><td>${escapeHtml(s.title)}</td><td><button class="btn-edit" onclick="editService(${i})">Edit</button><button class="btn-danger" onclick="deleteService(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>`;
+        }
+        
+        async function addService() {
+            const services = [...portfolioData.services];
+            services.push({ id: Date.now(), icon: document.getElementById('newIcon').value, title: document.getElementById('newTitle').value, description: document.getElementById('newDesc').value });
+            if (await saveToServer('portfolio_services', services)) showSection('services');
+        }
+        async function deleteService(i) { const s = [...portfolioData.services]; s.splice(i,1); if (await saveToServer('portfolio_services', s)) showSection('services'); }
+        function editService(i) { currentEditType = 'service'; currentEditIndex = i; openModal('Edit Service', `<div class="form-group"><label>Icon</label><input type="text" id="editIcon" value="${portfolioData.services[i].icon}"></div><div class="form-group"><label>Title</label><input type="text" id="editTitle" value="${escapeHtml(portfolioData.services[i].title)}"></div><div class="form-group"><label>Description</label><textarea id="editDesc" rows="3">${escapeHtml(portfolioData.services[i].description)}</textarea></div>`); }
+        
+        function renderSkills() {
+            return `<div class="form-container"><h3>Technical Skills</h3>${portfolioData.technicalSkills.map((s, i) => `<div class="skill-item-row"><input type="text" id="techName${i}" value="${escapeHtml(s.name)}"><input type="number" id="techLevel${i}" value="${s.level}" style="width:80px;"><button class="btn-edit" onclick="updateTech(${i})">Save</button><button class="btn-danger" onclick="deleteTech(${i})">Del</button></div>`).join('')}
+                <div style="margin-top:15px;"><input type="text" id="newTechName" placeholder="Skill"><input type="number" id="newTechLevel" placeholder="Level" style="width:80px;"><button class="btn-primary" onclick="addTech()">Add</button></div></div>
+                <div class="form-container"><h3>Professional Skills</h3>${portfolioData.professionalSkills.map((s, i) => `<div class="skill-item-row"><input type="text" id="profName${i}" value="${escapeHtml(s.name)}"><input type="number" id="profLevel${i}" value="${s.level}" style="width:80px;"><button class="btn-edit" onclick="updateProf(${i})">Save</button><button class="btn-danger" onclick="deleteProf(${i})">Del</button></div>`).join('')}
+                <div style="margin-top:15px;"><input type="text" id="newProfName" placeholder="Skill"><input type="number" id="newProfLevel" placeholder="Level" style="width:80px;"><button class="btn-primary" onclick="addProf()">Add</button></div></div>`;
+        }
+        
+        async function addTech() { const s = [...portfolioData.technicalSkills]; s.push({ id: Date.now(), name: document.getElementById('newTechName').value, level: parseInt(document.getElementById('newTechLevel').value), icon: 'bx bx-code' }); if (await saveToServer('portfolio_skills_technical', s)) showSection('skills'); }
+        async function deleteTech(i) { const s = [...portfolioData.technicalSkills]; s.splice(i,1); if (await saveToServer('portfolio_skills_technical', s)) showSection('skills'); }
+        async function updateTech(i) { const s = [...portfolioData.technicalSkills]; s[i].name = document.getElementById(`techName${i}`).value; s[i].level = parseInt(document.getElementById(`techLevel${i}`).value); if (await saveToServer('portfolio_skills_technical', s)) showSection('skills'); }
+        async function addProf() { const s = [...portfolioData.professionalSkills]; s.push({ id: Date.now(), name: document.getElementById('newProfName').value, level: parseInt(document.getElementById('newProfLevel').value) }); if (await saveToServer('portfolio_skills_professional', s)) showSection('skills'); }
+        async function deleteProf(i) { const s = [...portfolioData.professionalSkills]; s.splice(i,1); if (await saveToServer('portfolio_skills_professional', s)) showSection('skills'); }
+        async function updateProf(i) { const s = [...portfolioData.professionalSkills]; s[i].name = document.getElementById(`profName${i}`).value; s[i].level = parseInt(document.getElementById(`profLevel${i}`).value); if (await saveToServer('portfolio_skills_professional', s)) showSection('skills'); }
+        
+        function renderProjects() {
+            return `<div class="form-container"><h3>Add Project</h3>
+                <div class="form-group"><label>Title</label><input type="text" id="newProjectTitle"></div>
+                <div class="form-group"><label>Description</label><textarea id="newProjectDesc" rows="2"></textarea></div>
+                <div class="form-group"><label>Image URL</label><input type="text" id="newProjectImage"></div>
+                <div class="form-group"><label>Technologies</label><input type="text" id="newProjectTech" placeholder="React, Node.js"></div>
+                <button class="btn-primary" onclick="addProject()">+ Add</button></div>
+                <div class="data-table"><h3>Projects (${portfolioData.projects.length})</h3><table><thead><tr><th>Title</th><th>Technologies</th><th>Actions</th></tr></thead><tbody>${portfolioData.projects.map((p, i) => `<tr><td>${escapeHtml(p.title)}</td><td>${(p.technologies || []).join(', ')}</td><td><button class="btn-edit" onclick="editProject(${i})">Edit</button><button class="btn-danger" onclick="deleteProject(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>`;
+        }
+        
+        async function addProject() { const p = [...portfolioData.projects]; p.push({ id: Date.now(), title: document.getElementById('newProjectTitle').value, description: document.getElementById('newProjectDesc').value, image: document.getElementById('newProjectImage').value, technologies: document.getElementById('newProjectTech').value.split(',').map(t=>t.trim()) }); if (await saveToServer('portfolio_projects', p)) showSection('projects'); }
+        async function deleteProject(i) { const p = [...portfolioData.projects]; p.splice(i,1); if (await saveToServer('portfolio_projects', p)) showSection('projects'); }
+        function editProject(i) { currentEditType = 'project'; currentEditIndex = i; openModal('Edit Project', `<div class="form-group"><label>Title</label><input type="text" id="editTitle" value="${escapeHtml(portfolioData.projects[i].title)}"></div><div class="form-group"><label>Description</label><textarea id="editDesc" rows="3">${escapeHtml(portfolioData.projects[i].description)}</textarea></div><div class="form-group"><label>Image URL</label><input type="text" id="editImage" value="${portfolioData.projects[i].image || ''}"></div><div class="form-group"><label>Technologies</label><input type="text" id="editTech" value="${(portfolioData.projects[i].technologies || []).join(', ')}"></div>`); }
+        
+        function renderTeamwork() {
+            return `<div class="form-container"><h3>Add TeamWork</h3>
+                <div class="form-group"><label>Title</label><input type="text" id="newTeamTitle"></div>
+                <div class="form-group"><label>Description</label><textarea id="newTeamDesc" rows="2"></textarea></div>
+                <div class="form-group"><label>Role</label><input type="text" id="newTeamRole"></div>
+                <button class="btn-primary" onclick="addTeamwork()">+ Add</button></div>
+                <div class="data-table"><h3>TeamWork (${portfolioData.teamwork.length})</h3><table><thead><tr><th>Title</th><th>Role</th><th>Actions</th></tr></thead><tbody>${portfolioData.teamwork.map((t, i) => `<tr><td>${escapeHtml(t.title)}</td><td>${t.role || 'Member'}</td><td><button class="btn-edit" onclick="editTeamwork(${i})">Edit</button><button class="btn-danger" onclick="deleteTeamwork(${i})">Delete</button></td></tr>`).join('')}</tbody></table></div>`;
+        }
+        
+        async function addTeamwork() { const t = [...portfolioData.teamwork]; t.push({ id: Date.now(), title: document.getElementById('newTeamTitle').value, description: document.getElementById('newTeamDesc').value, role: document.getElementById('newTeamRole').value }); if (await saveToServer('portfolio_teamwork', t)) showSection('teamwork'); }
+        async function deleteTeamwork(i) { const t = [...portfolioData.teamwork]; t.splice(i,1); if (await saveToServer('portfolio_teamwork', t)) showSection('teamwork'); }
+        function editTeamwork(i) { currentEditType = 'teamwork'; currentEditIndex = i; openModal('Edit TeamWork', `<div class="form-group"><label>Title</label><input type="text" id="editTitle" value="${escapeHtml(portfolioData.teamwork[i].title)}"></div><div class="form-group"><label>Description</label><textarea id="editDesc" rows="3">${escapeHtml(portfolioData.teamwork[i].description)}</textarea></div><div class="form-group"><label>Role</label><input type="text" id="editRole" value="${portfolioData.teamwork[i].role || ''}"></div>`); }
+        
+        function renderContact() {
+            return `<div class="form-container"><h3>Contact Messages</h3><div id="messagesList">Loading...</div></div>`;
+        }
+        
+        async function loadMessages() {
+            try {
+                const res = await fetch(`${API_URL}/contact`);
+                const msgs = await res.json();
+                document.getElementById('messagesList').innerHTML = msgs.length === 0 ? '<p>No messages yet.</p>' : msgs.slice().reverse().map(m => `<div style="background:#2a2a4a;padding:15px;border-radius:10px;margin-bottom:15px;"><h4>${escapeHtml(m.name)}</h4><p>${escapeHtml(m.email)}</p><p>${escapeHtml(m.message)}</p><small>${new Date(m.created_at).toLocaleString()}</small></div>`).join('');
+            } catch(e) { document.getElementById('messagesList').innerHTML = '<p>Error loading messages</p>'; }
+        }
+        
+        function openModal(title, bodyHtml) { document.getElementById('modalTitle').innerHTML = title; document.getElementById('modalBody').innerHTML = bodyHtml; document.getElementById('editModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+        
+        async function saveEdit() {
+            if (currentEditType === 'service') {
+                const s = [...portfolioData.services];
+                s[currentEditIndex] = { ...s[currentEditIndex], icon: document.getElementById('editIcon').value, title: document.getElementById('editTitle').value, description: document.getElementById('editDesc').value };
+                if (await saveToServer('portfolio_services', s)) { closeModal(); showSection('services'); }
+            } else if (currentEditType === 'project') {
+                const p = [...portfolioData.projects];
+                p[currentEditIndex] = { ...p[currentEditIndex], title: document.getElementById('editTitle').value, description: document.getElementById('editDesc').value, image: document.getElementById('editImage').value, technologies: document.getElementById('editTech').value.split(',').map(t=>t.trim()) };
+                if (await saveToServer('portfolio_projects', p)) { closeModal(); showSection('projects'); }
+            } else if (currentEditType === 'teamwork') {
+                const t = [...portfolioData.teamwork];
+                t[currentEditIndex] = { ...t[currentEditIndex], title: document.getElementById('editTitle').value, description: document.getElementById('editDesc').value, role: document.getElementById('editRole').value };
+                if (await saveToServer('portfolio_teamwork', t)) { closeModal(); showSection('teamwork'); }
+            }
+        }
+        
+        function logout() { localStorage.removeItem('isLoggedIn'); window.location.href = '/login.html'; }
+        
+        window.showSection = showSection; window.saveProfile = saveProfile; window.saveAbout = saveAbout;
+        window.addService = addService; window.deleteService = deleteService; window.editService = editService;
+        window.addTech = addTech; window.deleteTech = deleteTech; window.updateTech = updateTech;
+        window.addProf = addProf; window.deleteProf = deleteProf; window.updateProf = updateProf;
+        window.addProject = addProject; window.deleteProject = deleteProject; window.editProject = editProject;
+        window.addTeamwork = addTeamwork; window.deleteTeamwork = deleteTeamwork; window.editTeamwork = editTeamwork;
+        window.saveEdit = saveEdit; window.closeModal = closeModal; window.logout = logout;
+        
+        showSection('dashboard');
+        if (document.getElementById('messagesList')) loadMessages();
+        setInterval(() => { if (document.getElementById('messagesList')) loadMessages(); }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahul Kumar Mahato - Professional Portfolio</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/responsive.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <style>
+        .loader { text-align: center; padding: 50px; color: #0ef; }
+        .no-data { text-align: center; padding: 40px; color: #8899aa; }
+    </style>
+</head>
+<body>
+    <section class="header">
+        <a href="#" class="logo">Portfolio</a>
+        <nav class="navbar">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Services</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#teamwork" class="nav-link">TeamWork</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <a href="/login.html" class="admin-link">Admin Login</a>
+        </nav>
+        <div class="burger"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+    </section>
+
+    <section id="home" class="home">
+        <div class="home-content">
+            <h3>Hello, It's Me</h3>
+            <h1 id="adminNameDisplay">Loading...</h1>
+            <h3>And I'm a <span class="typed-text"></span></h3>
+            <p id="homeDescription">Loading...</p>
+            <div class="home-sci">
+                <a href="#"><i class="bx bxl-facebook"></i></a>
+                <a href="#"><i class="bx bxl-instagram"></i></a>
+                <a href="#"><i class="bx bxl-github"></i></a>
+                <a href="#"><i class="bx bxl-linkedin"></i></a>
+            </div>
+            <div class="hero-buttons">
+                <button class="btn-box" onclick="scrollToSection('projects')">View My Projects</button>
+                <button class="btn-box" onclick="downloadCV()">Download CV</button>
+            </div>
+        </div>
+        <div class="img">
+            <img id="profileImage" class="round" src="/images/ME.jpeg" alt="Profile" style="width:370px;height:370px;object-fit:cover;border-radius:50%;">
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="about-text">
+            <div class="abo"><h2>About <span>Me</span></h2><div id="aboutContent"><h4>Loading...</h4></div></div>
+            <div class="para" id="aboutParagraphs"><div class="first"><p>Loading...</p></div></div>
+            <a href="#" class="btn-box">More About Me</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container"><h1 class="sub-title">My <span>Services</span></h1><div class="services-list" id="servicesList"><div class="loader">Loading services...</div></div></div>
+    </section>
+
+    <section id="skills"><h1 class="sub-title">My <span>Skills</span></h1>
+        <div class="container1"><div class="Techinical-bars" id="technicalSkills"><div class="loader">Loading skills...</div></div>
+        <div class="radial-bars" id="professionalSkills"><div class="loader">Loading skills...</div></div></div>
+    </section>
+
+    <section id="projects"><div class="main-text"><h2>Latest <span>Projects</span></h2>
+        <div class="portfolio-content" id="projectsList"><div class="loader">Loading projects...</div></div></div>
+    </section>
+
+    <section id="teamwork"><div class="main-text"><h2>Team <span>Work</span></h2>
+        <div class="portfolio-content" id="teamworkList"><div class="loader">Loading teamwork...</div></div></div>
+    </section>
+
+    <section id="contact"><div id="contactFormContainer"><div class="loader">Loading contact form...</div></div></section>
+
+    <div class="last-text"><p><i class='bx bxl-dev-to'></i> By Rahul Mahato | © 2025 All Rights Reserved</p></div>
+    <a href="#" class="top"><i class="bx bx-up-arrow-alt"></i></a>
+
+    <script>
+        const API_URL = '/api';
+        
+        async function loadData() {
+            try {
+                const res = await fetch(`${API_URL}/data`);
+                const data = await res.json();
+                
+                // Profile
+                const profile = data.portfolio_profile || {};
+                document.getElementById('adminNameDisplay').innerText = profile.name || 'Rahul Mahato';
+                document.getElementById('homeDescription').innerText = profile.bio || 'Web Developer';
+                const img = document.getElementById('profileImage');
+                if (img && profile.image) img.src = profile.image;
+                
+                // About
+                const about = data.portfolio_about || {};
+                document.getElementById('aboutContent').innerHTML = '<h4>' + (about.mainText || 'Full Stack Developer') + '</h4>';
+                if (about.paragraphs) {
+                    document.querySelector('#aboutParagraphs .first').innerHTML = about.paragraphs.map(p => `<p class="about-paragraph">${escapeHtml(p)}</p>`).join('');
+                }
+                
+                // Services
+                const services = data.portfolio_services || [];
+                document.getElementById('servicesList').innerHTML = services.map(s => `<div><i class="${s.icon}" style="color:#08f6d9;font-size:50px;"></i><h2>${escapeHtml(s.title)}</h2><p>${escapeHtml(s.description)}</p><a href="#" class="read">Learn More</a></div>`).join('') || '<div class="no-data">No services yet</div>';
+                
+                // Technical Skills
+                const techSkills = data.portfolio_skills_technical || [];
+                document.getElementById('technicalSkills').innerHTML = `<div class="skill-category"><h3 class="category-title"><i class="bx bx-code-alt"></i> Technical Skills</h3>${techSkills.map(s => `<div class="bar"><i class="${s.icon || 'bx bx-code'}" style="color:#0ef;"></i><div class="indfo"><span>${escapeHtml(s.name)}</span></div><div class="progress-line"><span style="width:${s.level}%"></span></div></div>`).join('')}</div>`;
+                
+                // Professional Skills
+                const profSkills = data.portfolio_skills_professional || [];
+                document.getElementById('professionalSkills').innerHTML = profSkills.map(s => { let offset = 502 - (502 * s.level / 100); return `<div class="radial-bar"><svg viewBox="0 0 200 200"><circle class="progress-bar" cx="100" cy="100" r="80"></circle><circle class="path" cx="100" cy="100" r="80" style="stroke-dashoffset:${offset}"></circle></svg><div class="percentage">${s.level}%</div><div class="text">${escapeHtml(s.name)}</div></div>`; }).join('');
+                
+                // Projects
+                const projects = data.portfolio_projects || [];
+                document.getElementById('projectsList').innerHTML = projects.map(p => `<div class="row"><img src="${p.image || ''}" alt="${escapeHtml(p.title)}" onerror="this.style.display='none'"><div class="layer"><h5>${escapeHtml(p.title)}</h5><p>${escapeHtml(p.description.substring(0,100))}...</p><div class="project-tech">${(p.technologies || []).map(t => `<span class="tech-tag">${escapeHtml(t)}</span>`).join('')}</div></div></div>`).join('') || '<div class="no-data">No projects yet</div>';
+                
+                // Teamwork
+                const teamwork = data.portfolio_teamwork || [];
+                document.getElementById('teamworkList').innerHTML = teamwork.map(t => `<div class="row"><img src="${t.image || ''}" alt="${escapeHtml(t.title)}"><div class="layer"><h5>${escapeHtml(t.title)}</h5><p>${escapeHtml(t.description.substring(0,100))}...</p><p><small>Role: ${escapeHtml(t.role || 'Member')}</small></p></div></div>`).join('') || '<div class="no-data">No teamwork entries</div>';
+                
+                // Contact Form
+                document.getElementById('contactFormContainer').innerHTML = `<div class="contact"><div class="contact-form"><h2>Contact <span>Me</span></h2><form onsubmit="submitContact(event)"><div class="form-group"><input type="text" id="contactName" placeholder="Your Name" required></div><div class="form-group"><input type="email" id="contactEmail" placeholder="Your Email" required></div><div class="form-group"><textarea id="contactMessage" placeholder="Your Message" rows="5" required></textarea></div><button type="submit" class="btn-box">Send Message</button></form></div><div class="contact-info"><h3>Get in Touch</h3><p><i class="bx bx-envelope"></i> ${profile.email || 'admin@gmail.com'}</p><p><i class="bx bx-phone"></i> ${profile.phone || '+977 98XXXXXXXX'}</p><p><i class="bx bx-map"></i> ${profile.address || 'Kathmandu, Nepal'}</p><div class="social-icons"><a href="#"><i class="bx bxl-facebook"></i></a><a href="#"><i class="bx bxl-instagram"></i></a><a href="#"><i class="bx bxl-linkedin"></i></a><a href="#"><i class="bx bxl-github"></i></a></div></div></div>`;
+                
+                // Track visitor (using server-side API instead of external)
+                trackVisitor();
+                
+            } catch(e) { console.error('Error loading data:', e); }
+        }
+        
+        async function submitContact(e) {
+            e.preventDefault();
+            const name = document.getElementById('contactName')?.value;
+            const email = document.getElementById('contactEmail')?.value;
+            const message = document.getElementById('contactMessage')?.value;
+            if (!name || !email || !message) { alert('Please fill all fields.'); return; }
+            try {
+                await fetch(`${API_URL}/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, message }) });
+                alert('Thank you! Your message has been sent.');
+                e.target.reset();
+            } catch(e) { alert('Error sending message.'); }
+        }
+        
+        // Fixed visitor tracking - no CORS issues
+        async function trackVisitor() {
+            try {
+                // Get browser and device info (client-side only, no external API)
+                const device = getDevice();
+                const browser = getBrowser();
+                
+                // Send to your server - no CORS issues because it's your own API
+                await fetch(`${API_URL}/visitor`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        ip: 'client-side', 
+                        city: 'Unknown', 
+                        country: 'Unknown', 
+                        device: device, 
+                        browser: browser 
+                    }) 
+                });
+            } catch(e) { console.log('Visitor tracking skipped'); }
+        }
+        
+        function getDevice() { return /Mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'; }
+        function getBrowser() { 
+            const ua = navigator.userAgent;
+            if (ua.includes('Chrome')) return 'Chrome';
+            if (ua.includes('Firefox')) return 'Firefox';
+            if (ua.includes('Safari')) return 'Safari';
+            if (ua.includes('Edge')) return 'Edge';
+            return 'Other';
+        }
+        
+        function escapeHtml(str) { if (!str) return ''; return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+        window.scrollToSection = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        window.downloadCV = () => { const profile = JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); window.open(profile.cv || '/cv/cv-3.docx', '_blank'); };
+        
+        function initTyped() { if (typeof Typed !== 'undefined') new Typed('.typed-text', { strings: ['Full Stack Developer', 'UI/UX Designer', 'Problem Solver'], typeSpeed: 100, backSpeed: 60, loop: true }); }
+        function initBurger() { document.querySelector('.burger')?.addEventListener('click', () => { document.querySelector('.navbar')?.classList.toggle('active'); }); }
+        
+        loadData();
+        initTyped();
+        initBurger();
+    </script>
+</body>
+</html>

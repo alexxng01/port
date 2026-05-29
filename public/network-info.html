@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Access Info</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0a0a2a;
+            color: #0ef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #1a1a3a;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #0ef;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 { text-align: center; margin-bottom: 20px; }
+        .url { 
+            background: #0a0a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .url a { color: #0ef; text-decoration: none; }
+        .url a:hover { text-decoration: underline; }
+        .qr {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .qr img { background: white; padding: 10px; border-radius: 10px; }
+        button {
+            background: #0ef;
+            color: #1a1a3a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .note {
+            font-size: 12px;
+            color: #8899aa;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Network Access</h1>
+        <div id="urls">
+            <div class="url">Loading...</div>
+        </div>
+        <div id="qrContainer" class="qr"></div>
+        <button onclick="copyUrls()">📋 Copy All URLs</button>
+        <div class="note">
+            Make sure your firewall allows port 3000<br>
+            All devices must be on the same network<br>
+            Use the IP address (not localhost) from other devices
+        </div>
+    </div>
+    <script>
+        async function loadNetworkInfo() {
+            try {
+                const res = await fetch('/api/network-info');
+                const data = await res.json();
+                
+                let html = '<div class="url"><strong>📱 Local (This computer):</strong><br>';
+                html += `<a href="${data.localhost}" target="_blank">${data.localhost}</a><br>`;
+                html += `<a href="${data.localhost}/login.html" target="_blank">${data.localhost}/login.html</a></div>`;
+                
+                if (data.network.length > 0) {
+                    html += '<div class="url"><strong>🌐 Network (Other devices):</strong><br>';
+                    data.network.forEach(url => {
+                        html += `<a href="${url}" target="_blank">${url}</a><br>`;
+                        html += `<a href="${url}/login.html" target="_blank">${url}/login.html</a><br>`;
+                    });
+                    html += '</div>';
+                    
+                    // Generate QR code for first network URL
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.network[0])}`;
+                    document.getElementById('qrContainer').innerHTML = `<img src="${qrUrl}" alt="QR Code"><br><small>Scan to open on phone</small>`;
+                }
+                document.getElementById('urls').innerHTML = html;
+            } catch(e) {
+                document.getElementById('urls').innerHTML = '<div class="url">Error loading network info</div>';
+            }
+        }
+        
+        function copyUrls() {
+            const urls = Array.from(document.querySelectorAll('.url a')).map(a => a.href);
+            navigator.clipboard.writeText(urls.join('\n'));
+            alert('URLs copied to clipboard!');
+        }
+        
+        loadNetworkInfo();
+    </script>
+</body>
+</html>

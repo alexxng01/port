@@ -1,134 +1,133 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const path = require('path');
-
-// Load environment variables from .env file
-dotenv.config();
+const jwt = require('jsonwebtoken');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// ✅ Complete CORS fix
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-}));
-
+// ✅ SIMPLE CORS - Allow everything
+app.use(cors());
 app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Simple in-memory database
+// Get local IP
+const os = require('os');
+const networkInterfaces = os.networkInterfaces();
+let localIp = 'localhost';
+Object.keys(networkInterfaces).forEach(interfaceName => {
+  networkInterfaces[interfaceName].forEach(iface => {
+    if (iface.family === 'IPv4' && !iface.internal) {
+      localIp = iface.address;
+    }
+  });
+});
+
+// ============ INITIAL DATA ============
 let portfolioData = {
   profile: {
     name: 'Rahul Mahato',
     title: 'Full Stack Developer',
-    bio: 'Web Developer with expertise in MERN stack',
-    email: process.env.ADMIN_EMAIL || 'rm91275@gmail.com',
+    bio: 'Passionate Full Stack Developer with expertise in MERN stack',
+    email: 'rm91275@gmail.com',
     phone: '+977 98XXXXXXXX',
-    address: 'Kathmandu, Nepal',
-    github: '',
-    linkedin: '',
-    image: ''
+    address: 'Kathmandu, Nepal'
   },
   about: {
     mainText: 'Full Stack Developer',
-    paragraphs: ['Experienced developer with 5+ years in web development', 'Passionate about creating beautiful and functional websites']
+    paragraphs: ['Experienced developer', 'Passionate about coding']
   },
   services: [
-    { id: 1, icon: 'bx bx-code', title: 'Web Development', description: 'Modern responsive websites' }
+    { id: 1, icon: 'bx bx-code-alt', title: 'Web Development', description: 'Modern websites' }
   ],
   technicalSkills: [
-    { id: 1, name: 'HTML5', level: 90, icon: 'bx bxl-html5' },
-    { id: 2, name: 'CSS3', level: 85, icon: 'bx bxl-css3' },
-    { id: 3, name: 'JavaScript', level: 80, icon: 'bx bxl-javascript' }
+    { id: 1, name: 'HTML5', level: 90, icon: 'bx bxl-html5' }
   ],
   professionalSkills: [
-    { id: 1, name: 'Creativity', level: 90 },
-    { id: 2, name: 'Communication', level: 85 }
+    { id: 1, name: 'Problem Solving', level: 90 }
   ],
   projects: [
-    { id: 1, title: 'E-Commerce Dashboard', description: 'Modern admin dashboard', technologies: ['React', 'Node.js'] }
+    { id: 1, title: 'Sample Project', description: 'A great project', technologies: ['React'] }
   ],
-  teamwork: []
+  teamwork: [
+    { id: 1, title: 'Team Work', description: 'Collaborated effectively', role: 'Member' }
+  ]
 };
 
-// JWT for authentication
-const jwt = require('jsonwebtoken');
+let contactMessages = [];
+let visitors = [];
 
-// Login endpoint
+const JWT_SECRET = 'my-secret-key-2024';
+
+// ============ AUTH ROUTES ============
 app.post('/api/auth/login', (req, res) => {
-  console.log('Login attempt:', req.body.email);
+  console.log('Login attempt:', req.body);
   const { email, password } = req.body;
   
-  const adminEmail = process.env.ADMIN_EMAIL || 'rm91275@gmail.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
-  
-  if (email === adminEmail && password === adminPassword) {
-    const token = jwt.sign({ email }, process.env.JWT_SECRET || 'secret', { expiresIn: '30d' });
-    res.json({
+  // Check credentials
+  if (email === 'rm91275@gmail.com' && password === 'Admin@123') {
+    const token = jwt.sign({ email, id: 1 }, JWT_SECRET, { expiresIn: '7d' });
+    return res.json({
       success: true,
-      token,
+      token: token,
       user: {
         id: 1,
-        name: 'Admin',
-        email: adminEmail,
+        name: 'Rahul Mahato',
+        email: email,
         role: 'admin'
       }
     });
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
-      message: 'Invalid credentials'
+      message: 'Invalid credentials. Use rm91275@gmail.com / Admin@123'
     });
   }
 });
 
-// Get current user
 app.get('/api/auth/me', (req, res) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
     return res.status(401).json({ success: false, message: 'No token' });
   }
   
+  const token = authHeader.split(' ')[1];
   try {
-    jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    res.json({
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return res.json({
       success: true,
       user: {
         id: 1,
-        name: 'Admin',
-        email: process.env.ADMIN_EMAIL || 'rm91275@gmail.com',
+        name: 'Rahul Mahato',
+        email: decoded.email,
         role: 'admin'
       }
     });
   } catch (error) {
-    res.status(401).json({ success: false, message: 'Invalid token' });
+    return res.status(401).json({ success: false, message: 'Invalid token' });
   }
 });
 
-// Get portfolio
+// ============ PORTFOLIO ROUTES ============
 app.get('/api/portfolio', (req, res) => {
   res.json({ success: true, data: portfolioData });
 });
 
-// Update profile
 app.put('/api/portfolio/profile', (req, res) => {
   portfolioData.profile = { ...portfolioData.profile, ...req.body };
   res.json({ success: true, data: portfolioData.profile });
 });
 
-// Update about
 app.put('/api/portfolio/about', (req, res) => {
   portfolioData.about = { ...portfolioData.about, ...req.body };
   res.json({ success: true, data: portfolioData.about });
 });
 
-// Services CRUD
+// Services
+app.get('/api/portfolio/services', (req, res) => {
+  res.json({ success: true, data: portfolioData.services });
+});
+
 app.post('/api/portfolio/services', (req, res) => {
   const newService = { id: Date.now(), ...req.body };
   portfolioData.services.push(newService);
@@ -136,21 +135,25 @@ app.post('/api/portfolio/services', (req, res) => {
 });
 
 app.put('/api/portfolio/services/:id', (req, res) => {
-  const index = portfolioData.services.findIndex(s => s.id === parseInt(req.params.id));
+  const index = portfolioData.services.findIndex(s => s.id == req.params.id);
   if (index !== -1) {
     portfolioData.services[index] = { ...portfolioData.services[index], ...req.body };
     res.json({ success: true, data: portfolioData.services[index] });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/portfolio/services/:id', (req, res) => {
-  portfolioData.services = portfolioData.services.filter(s => s.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  portfolioData.services = portfolioData.services.filter(s => s.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Technical Skills CRUD
+// Technical Skills
+app.get('/api/portfolio/technical-skills', (req, res) => {
+  res.json({ success: true, data: portfolioData.technicalSkills });
+});
+
 app.post('/api/portfolio/technical-skills', (req, res) => {
   const newSkill = { id: Date.now(), ...req.body };
   portfolioData.technicalSkills.push(newSkill);
@@ -158,21 +161,25 @@ app.post('/api/portfolio/technical-skills', (req, res) => {
 });
 
 app.put('/api/portfolio/technical-skills/:id', (req, res) => {
-  const index = portfolioData.technicalSkills.findIndex(s => s.id === parseInt(req.params.id));
+  const index = portfolioData.technicalSkills.findIndex(s => s.id == req.params.id);
   if (index !== -1) {
     portfolioData.technicalSkills[index] = { ...portfolioData.technicalSkills[index], ...req.body };
     res.json({ success: true, data: portfolioData.technicalSkills[index] });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/portfolio/technical-skills/:id', (req, res) => {
-  portfolioData.technicalSkills = portfolioData.technicalSkills.filter(s => s.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  portfolioData.technicalSkills = portfolioData.technicalSkills.filter(s => s.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Professional Skills CRUD
+// Professional Skills
+app.get('/api/portfolio/professional-skills', (req, res) => {
+  res.json({ success: true, data: portfolioData.professionalSkills });
+});
+
 app.post('/api/portfolio/professional-skills', (req, res) => {
   const newSkill = { id: Date.now(), ...req.body };
   portfolioData.professionalSkills.push(newSkill);
@@ -180,21 +187,25 @@ app.post('/api/portfolio/professional-skills', (req, res) => {
 });
 
 app.put('/api/portfolio/professional-skills/:id', (req, res) => {
-  const index = portfolioData.professionalSkills.findIndex(s => s.id === parseInt(req.params.id));
+  const index = portfolioData.professionalSkills.findIndex(s => s.id == req.params.id);
   if (index !== -1) {
     portfolioData.professionalSkills[index] = { ...portfolioData.professionalSkills[index], ...req.body };
     res.json({ success: true, data: portfolioData.professionalSkills[index] });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/portfolio/professional-skills/:id', (req, res) => {
-  portfolioData.professionalSkills = portfolioData.professionalSkills.filter(s => s.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  portfolioData.professionalSkills = portfolioData.professionalSkills.filter(s => s.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Projects CRUD
+// Projects
+app.get('/api/portfolio/projects', (req, res) => {
+  res.json({ success: true, data: portfolioData.projects });
+});
+
 app.post('/api/portfolio/projects', (req, res) => {
   const newProject = { id: Date.now(), ...req.body };
   portfolioData.projects.push(newProject);
@@ -202,21 +213,25 @@ app.post('/api/portfolio/projects', (req, res) => {
 });
 
 app.put('/api/portfolio/projects/:id', (req, res) => {
-  const index = portfolioData.projects.findIndex(p => p.id === parseInt(req.params.id));
+  const index = portfolioData.projects.findIndex(p => p.id == req.params.id);
   if (index !== -1) {
     portfolioData.projects[index] = { ...portfolioData.projects[index], ...req.body };
     res.json({ success: true, data: portfolioData.projects[index] });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/portfolio/projects/:id', (req, res) => {
-  portfolioData.projects = portfolioData.projects.filter(p => p.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  portfolioData.projects = portfolioData.projects.filter(p => p.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Teamwork CRUD
+// Teamwork
+app.get('/api/portfolio/teamwork', (req, res) => {
+  res.json({ success: true, data: portfolioData.teamwork });
+});
+
 app.post('/api/portfolio/teamwork', (req, res) => {
   const newTeamwork = { id: Date.now(), ...req.body };
   portfolioData.teamwork.push(newTeamwork);
@@ -224,23 +239,21 @@ app.post('/api/portfolio/teamwork', (req, res) => {
 });
 
 app.put('/api/portfolio/teamwork/:id', (req, res) => {
-  const index = portfolioData.teamwork.findIndex(t => t.id === parseInt(req.params.id));
+  const index = portfolioData.teamwork.findIndex(t => t.id == req.params.id);
   if (index !== -1) {
     portfolioData.teamwork[index] = { ...portfolioData.teamwork[index], ...req.body };
     res.json({ success: true, data: portfolioData.teamwork[index] });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/portfolio/teamwork/:id', (req, res) => {
-  portfolioData.teamwork = portfolioData.teamwork.filter(t => t.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  portfolioData.teamwork = portfolioData.teamwork.filter(t => t.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Contact messages
-let contactMessages = [];
-
+// Contact
 app.post('/api/contact', (req, res) => {
   const newMessage = { id: Date.now(), ...req.body, createdAt: new Date(), isRead: false };
   contactMessages.push(newMessage);
@@ -252,23 +265,21 @@ app.get('/api/contact', (req, res) => {
 });
 
 app.put('/api/contact/:id/read', (req, res) => {
-  const message = contactMessages.find(m => m.id === parseInt(req.params.id));
+  const message = contactMessages.find(m => m.id == req.params.id);
   if (message) {
     message.isRead = true;
-    res.json({ success: true, data: message });
+    res.json({ success: true });
   } else {
-    res.status(404).json({ success: false, message: 'Not found' });
+    res.status(404).json({ success: false });
   }
 });
 
 app.delete('/api/contact/:id', (req, res) => {
-  contactMessages = contactMessages.filter(m => m.id !== parseInt(req.params.id));
-  res.json({ success: true, message: 'Deleted' });
+  contactMessages = contactMessages.filter(m => m.id != req.params.id);
+  res.json({ success: true });
 });
 
-// Visitor tracking
-let visitors = [];
-
+// Visitor
 app.post('/api/visitor', (req, res) => {
   visitors.push({ id: Date.now(), ...req.body, visitDate: new Date() });
   res.json({ success: true });
@@ -279,11 +290,7 @@ app.get('/api/visitor/stats', (req, res) => {
   const todayVisitors = visitors.filter(v => new Date(v.visitDate).toDateString() === today).length;
   res.json({
     success: true,
-    data: {
-      total: visitors.length,
-      today: todayVisitors,
-      recent: visitors.slice(-10)
-    }
+    data: { total: visitors.length, today: todayVisitors, recent: visitors.slice(-10) }
   });
 });
 
@@ -293,12 +300,10 @@ app.get('/health', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`\n✅ Server running on http://localhost:${PORT}`);
-  console.log(`📍 API URL: http://localhost:${PORT}/api`);
-  console.log(`📍 Health Check: http://localhost:${PORT}/health`);
-  console.log(`\n🔐 Login with:`);
-  console.log(`   Email: ${process.env.ADMIN_EMAIL || 'rm91275@gmail.com'}`);
-  console.log(`   Password: ${process.env.ADMIN_PASSWORD || 'Admin@123'}`);
-  console.log(`\n🌐 CORS enabled for http://localhost:3000\n`);
+const PORT = 5002;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n✅ Server running on port ${PORT}`);
+  console.log(`📍 Local: http://localhost:${PORT}`);
+  console.log(`📍 Network: http://${localIp}:${PORT}`);
+  console.log(`\n🔐 Login: rm91275@gmail.com / Admin@123\n`);
 });

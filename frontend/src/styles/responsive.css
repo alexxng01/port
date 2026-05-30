@@ -1,0 +1,307 @@
+/* ==================== RESPONSIVE CSS ==================== */
+
+/* Extra Small Devices (max-width: 350px) */
+@media only screen and (max-width: 350px) {
+  .header {
+    padding: 15px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .home {
+    padding: 80px 15px 0;
+  }
+  
+  .home-content h1 {
+    font-size: 24px;
+  }
+  
+  .home-content h3 {
+    font-size: 18px;
+  }
+  
+  .round {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .sub-title {
+    font-size: 24px;
+  }
+  
+  .main-text h2 {
+    font-size: 24px;
+  }
+  
+  .about-text h2 {
+    font-size: 28px;
+  }
+  
+  .services-list div {
+    padding: 20px;
+  }
+  
+  .services-list div h2 {
+    font-size: 20px;
+  }
+  
+  .portfolio-content {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+  
+  .row img {
+    height: 180px;
+  }
+  
+  .contact {
+    padding: 20px 15px;
+  }
+  
+  .contact h2 {
+    font-size: 28px;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .radial-bar {
+    width: 140px;
+  }
+}
+
+/* Medium Devices (max-width: 650px) */
+@media only screen and (max-width: 650px) {
+  .header {
+    padding: 15px 20px;
+  }
+  
+  .navbar {
+    display: none;
+  }
+  
+  .navbar.active {
+    display: flex;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    background: #071b27;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 0;
+    z-index: 999;
+  }
+  
+  .navbar.active a {
+    margin: 12px 0;
+  }
+  
+  .burger {
+    display: block;
+  }
+  
+  .home {
+    flex-direction: column-reverse;
+    padding: 100px 20px 0;
+    text-align: center;
+  }
+  
+  .home-content h1 {
+    font-size: 32px;
+  }
+  
+  .round {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .about {
+    flex-direction: column;
+    margin: 0 20px;
+    text-align: center;
+  }
+  
+  .para {
+    flex-direction: column;
+  }
+  
+  .about-text h2 {
+    font-size: 36px;
+  }
+  
+  .sub-title {
+    font-size: 36px;
+  }
+  
+  .main-text h2 {
+    font-size: 36px;
+  }
+  
+  .services-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .portfolio-content {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  
+  .contact {
+    grid-template-columns: 1fr;
+    padding: 30px 20px;
+  }
+  
+  .contact h2 {
+    font-size: 36px;
+  }
+  
+  .container1 {
+    padding: 30px 20px;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .radial-bars {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .home-sci {
+    justify-content: center;
+  }
+}
+
+/* Tablet Devices (651px - 1080px) */
+@media only screen and (min-width: 651px) and (max-width: 1080px) {
+  .header {
+    padding: 18px 5%;
+  }
+  
+  .navbar {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: transparent;
+    width: auto;
+    gap: 25px;
+  }
+  
+  .navbar a {
+    font-size: 16px;
+  }
+  
+  .burger {
+    display: none !important;
+  }
+  
+  .home {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 120px 5% 0;
+  }
+  
+  .home-content h1 {
+    font-size: 42px;
+  }
+  
+  .round {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .about {
+    flex-direction: column;
+    margin: 0 40px;
+    text-align: center;
+  }
+  
+  .para {
+    flex-direction: column;
+  }
+  
+  .sub-title {
+    font-size: 48px;
+  }
+  
+  .main-text h2 {
+    font-size: 48px;
+  }
+  
+  .portfolio-content {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    padding: 20px 5%;
+  }
+  
+  .contact {
+    grid-template-columns: 1fr;
+    padding: 40px 5%;
+  }
+  
+  .Techinical-bars {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .home-sci {
+    justify-content: center;
+  }
+}
+
+/* Desktop (min-width: 1081px) */
+@media only screen and (min-width: 1081px) {
+  .navbar {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+  }
+  
+  .burger {
+    display: none !important;
+  }
+  
+  .home {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .about {
+    flex-direction: row;
+    text-align: left;
+  }
+  
+  .para {
+    flex-direction: row;
+  }
+}
+
+/* Large Desktop (min-width: 1400px) */
+@media only screen and (min-width: 1400px) {
+  .container, .container1 {
+    padding: 20px 15%;
+  }
+  
+  .portfolio-content {
+    padding: 30px 15%;
+  }
+  
+  .home {
+    padding: 120px 15% 0;
+  }
+  
+  .about {
+    margin: 0 15%;
+  }
+}

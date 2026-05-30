@@ -43,7 +43,7 @@ const Login = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@gmail.com"
+              placeholder="rm91275@gmail.com"
               required
             />
           </div>
@@ -52,7 +52,7 @@ const Login = () => {
             <label>
               <i className="bx bx-lock"></i> Password
             </label>
-            <div className="password-field">
+            <div className="password-field" style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
@@ -61,14 +61,15 @@ const Login = () => {
                 required
               />
               <i
-                className={`bx ${showPassword ? 'bx-hide' : 'bx-show'} toggle-password`}
+                className={`bx ${showPassword ? 'bx-hide' : 'bx-show'}`}
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   position: 'absolute',
                   right: '15px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  color: '#8899aa'
                 }}
               ></i>
             </div>
@@ -86,7 +87,7 @@ const Login = () => {
         </div>
 
         <div className="info-text">
-          <i className="bx bx-info-circle"></i> Default: admin@gmail.com | Admin@123
+          <i className="bx bx-info-circle"></i> Use: rm91275@gmail.com | Admin@123
         </div>
       </div>
     </div>

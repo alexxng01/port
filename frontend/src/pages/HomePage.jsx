@@ -9,7 +9,7 @@ import Teamwork from '../components/Home/Teamwork';
 import Contact from '../components/Home/Contact';
 import Footer from '../components/Layout/Footer';
 import Loader from '../components/Common/Loader';
-import { portfolioService } from '../services/portfolioService';
+import portfolioService from '../services/portfolioService';
 import { visitorService } from '../services/contactService';
 
 const HomePage = () => {
@@ -24,7 +24,21 @@ const HomePage = () => {
   const fetchPortfolio = async () => {
     try {
       const response = await portfolioService.getPortfolio();
-      setPortfolio(response.data);
+      if (response.success) {
+        setPortfolio(response.data);
+      } else {
+        console.error('Failed to fetch portfolio:', response.message);
+        // Set empty data structure to avoid errors
+        setPortfolio({
+          profile: {},
+          about: {},
+          services: [],
+          technicalSkills: [],
+          professionalSkills: [],
+          projects: [],
+          teamwork: []
+        });
+      }
     } catch (error) {
       console.error('Error fetching portfolio:', error);
     } finally {
@@ -34,36 +48,27 @@ const HomePage = () => {
 
   const trackVisitor = async () => {
     try {
-      const visitorData = {
-        deviceType: getDeviceType(),
-        browser: getBrowser(),
-        pageVisited: window.location.pathname,
-        referrer: document.referrer,
-      };
-      await visitorService.trackVisitor(visitorData);
+      const ua = navigator.userAgent;
+      let deviceType = 'Desktop';
+      if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) deviceType = 'Tablet';
+      else if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle/i.test(ua)) deviceType = 'Mobile';
+      
+      let browser = 'Unknown';
+      if (ua.includes('Chrome')) browser = 'Chrome';
+      else if (ua.includes('Firefox')) browser = 'Firefox';
+      else if (ua.includes('Safari')) browser = 'Safari';
+      else if (ua.includes('Edge')) browser = 'Edge';
+      
+      await visitorService.trackVisitor({ 
+        deviceType, 
+        browser, 
+        pageVisited: window.location.pathname, 
+        referrer: document.referrer 
+      });
     } catch (error) {
-      console.error('Error tracking visitor:', error);
+      // Silently fail - visitor tracking is not critical
+      console.log('Visitor tracking not available');
     }
-  };
-
-  const getDeviceType = () => {
-    const ua = navigator.userAgent;
-    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-      return 'Tablet';
-    }
-    if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-      return 'Mobile';
-    }
-    return 'Desktop';
-  };
-
-  const getBrowser = () => {
-    const ua = navigator.userAgent;
-    if (ua.includes('Chrome')) return 'Chrome';
-    if (ua.includes('Firefox')) return 'Firefox';
-    if (ua.includes('Safari')) return 'Safari';
-    if (ua.includes('Edge')) return 'Edge';
-    return 'Unknown';
   };
 
   if (loading) return <Loader />;
@@ -74,9 +79,9 @@ const HomePage = () => {
       <Hero data={portfolio?.profile} />
       <About data={portfolio?.about} />
       <Services data={portfolio?.services} />
-      <Skills
-        technicalSkills={portfolio?.technicalSkills}
-        professionalSkills={portfolio?.professionalSkills}
+      <Skills 
+        technical={portfolio?.technicalSkills} 
+        professional={portfolio?.professionalSkills} 
       />
       <Projects data={portfolio?.projects} />
       <Teamwork data={portfolio?.teamwork} />

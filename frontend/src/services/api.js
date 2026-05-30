@@ -1,60 +1,56 @@
 import axios from 'axios';
 
-// Get API URL from environment or use default
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// ✅ IMPORTANT: Use port 5002, NOT 5001
+const API_URL = 'http://localhost:5002/api';
 
-console.log('API URL:', API_URL); // Debug log
+console.log('API URL:', API_URL);
 
-// Create axios instance
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json'
   },
-  timeout: 30000,
+  withCredentials: false
 });
 
-// Request interceptor to add token
+// Add token to requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log(`Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
+    console.log(`📤 ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
     return config;
   },
   (error) => {
+    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for error handling
+// Handle responses
 api.interceptors.response.use(
   (response) => {
-    console.log('Response:', response.status, response.config.url);
+    console.log(`📥 ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
     console.error('API Error:', error.response?.status, error.response?.data);
     
-    // Handle 401 Unauthorized
+    // Don't redirect for visitor tracking errors
+    if (error.config?.url === '/visitor') {
+      return Promise.resolve({ data: { success: false } });
+    }
+    
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
-    
-    // Handle network errors
-    if (error.message === 'Network Error') {
-      console.error('Network error - check if backend is running on port 5000');
-      error.response = {
-        data: {
-          message: 'Cannot connect to server. Please check if backend is running on port 5000'
-        }
-      };
-    }
-    
     return Promise.reject(error);
   }
 );

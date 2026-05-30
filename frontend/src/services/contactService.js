@@ -1,7 +1,6 @@
 import api from './api';
 
 const contactService = {
-  // Send contact message
   sendMessage: async (messageData) => {
     try {
       const response = await api.post('/contact', messageData);
@@ -18,7 +17,6 @@ const contactService = {
     }
   },
 
-  // Get all messages (admin only)
   getMessages: async () => {
     try {
       const response = await api.get('/contact');
@@ -36,7 +34,6 @@ const contactService = {
     }
   },
 
-  // Mark message as read
   markAsRead: async (id) => {
     try {
       const response = await api.put(`/contact/${id}/read`);
@@ -53,7 +50,6 @@ const contactService = {
     }
   },
 
-  // Delete message
   deleteMessage: async (id) => {
     try {
       const response = await api.delete(`/contact/${id}`);
@@ -69,7 +65,6 @@ const contactService = {
     }
   },
 
-  // Get unread count
   getUnreadCount: async () => {
     try {
       const response = await api.get('/contact');
@@ -87,12 +82,12 @@ const contactService = {
   }
 };
 
-// Visitor Service
 const visitorService = {
-  // Track visitor
   trackVisitor: async (visitorData) => {
     try {
+      console.log('Tracking visitor to:', '/visitor');
       const response = await api.post('/visitor', visitorData);
+      console.log('Visitor tracked successfully');
       return { success: true };
     } catch (error) {
       console.error('Error tracking visitor:', error);
@@ -100,7 +95,6 @@ const visitorService = {
     }
   },
 
-  // Get visitor statistics (admin only)
   getStats: async () => {
     try {
       const response = await api.get('/visitor/stats');
@@ -119,5 +113,5 @@ const visitorService = {
   }
 };
 
-export { contactService, visitorService };
 export default contactService;
+export { contactService, visitorService };

@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
-const API_URL = 'http://localhost:5002/api';
+// Use relative path - automatically works with any origin (localhost, IP, domain)
+const API_URL = '/api';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -25,10 +26,14 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       if (response.data.success) {
         setUser(response.data.user);
+      } else {
+        localStorage.removeItem('token');
       }
     } catch (error) {
+      console.error('Fetch user error:', error);
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -36,34 +41,43 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    try {
-      console.log('Logging in with:', email);
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    });
       
-      const response = await axios.post(`${API_URL}/auth/login`, { 
-        email, 
-        password 
-      });
+      const data = await response.json();
       
-      console.log('Response:', response.data);
+      console.log('Login response:', data);
       
-      if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
-        setUser(response.data.user);
+      if (data.success) {
+        const { token, user } = data;
+        localStorage.setItem('token', token);
+        setUser(user);
         toast.success('Login successful!');
         return true;
       } else {
-        toast.error(response.data.message);
+        toast.error(data.message || 'Login failed');
         return false;
       }
     } catch (error) {
       console.error('Login error:', error);
-      if (error.response) {
-        toast.error(error.response.data?.message || 'Login failed');
-      } else if (error.request) {
-        toast.error('Cannot connect to server. Make sure backend is running on port 5002');
-      } else {
-        toast.error('Login failed');
+      
+      let errorMessage = 'Login failed. ';
+      if (error.code === 'ERR_NETWORK') {
+        errorMessage = 'Cannot connect to server. Make sure backend is running on port 5002';
+      } else if (error.response?.status === 401) {
+        errorMessage = error.response.data?.message || 'Invalid credentials';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
       }
+      
+      toast.error(errorMessage);
       return false;
     }
   };
@@ -71,7 +85,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    toast.success('Logged out');
+    toast.success('Logged out successfully');
   };
 
   return (

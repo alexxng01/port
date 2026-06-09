@@ -80,8 +80,8 @@ const HomePage = () => {
       <About data={portfolio?.about} />
       <Services data={portfolio?.services} />
       <Skills 
-        technical={portfolio?.technicalSkills} 
-        professional={portfolio?.professionalSkills} 
+        technicalSkills={portfolio?.technicalSkills} 
+        professionalSkills={portfolio?.professionalSkills} 
       />
       <Projects data={portfolio?.projects} />
       <Teamwork data={portfolio?.teamwork} />

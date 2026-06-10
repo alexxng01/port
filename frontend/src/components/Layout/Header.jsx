@@ -108,7 +108,7 @@ const Header = () => {
         >
           Contact
         </a>
-        </a>
+       
       </nav>
       <div className={`burger ${isActive ? 'active' : ''}`} onClick={toggleMenu}>
         <div className="line"></div>

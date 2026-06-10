@@ -8,38 +8,7 @@ const app = express();
 
 // CORS Configuration - Allow development origins
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) {
-      return callback(null, true);
-    }
-    
-    // In development mode, allow any origin to make network testing seamless
-    if (process.env.NODE_ENV === 'development') {
-      return callback(null, true);
-    }
-    
-    const allowedOrigins = [
-      'http://localhost:5001',
-      'http://localhost:5002',
-      'http://localhost:5003',
-      'http://localhost:3000',
-      'http://127.0.0.1:5001',
-      'http://127.0.0.1:5002',
-      'http://127.0.0.1:5003',
-      'http://127.0.0.1:3000',
-      'https://react-portfolio-full.pages.dev',
-      'https://port-wp7o.onrender.com'
-    ];
-    
-    const isLocalIp = /^http:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin);
-
-    if (allowedOrigins.indexOf(origin) !== -1 || isLocalIp) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
-    }
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],

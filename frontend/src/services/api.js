@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use relative path - automatically works with any origin (localhost, IP, domain)
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://port-wp7o.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,

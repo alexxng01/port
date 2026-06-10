@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+const API_BASE = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/api$/, '')
+  : 'http://localhost:5002';
+
 const ResetPassword = () => {
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const email = localStorage.getItem('resetEmail') || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,29 +28,55 @@ const ResetPassword = () => {
       return;
     }
 
-    const storedOTP = localStorage.getItem('resetOTP');
-
-    if (otp !== storedOTP) {
-      toast.error('Invalid OTP');
+    if (!email) {
+      toast.error('Session expired. Please start the forgot password process again.');
+      navigate('/forgot-password');
       return;
     }
 
     setLoading(true);
 
-    // Update password in localStorage for demo
-    const adminAccount = JSON.parse(localStorage.getItem('admin_account'));
-    if (adminAccount) {
-      adminAccount.password = newPassword;
-      localStorage.setItem('admin_account', JSON.stringify(adminAccount));
+    try {
+      // Step 1: Verify OTP via backend
+      const otpRes = await fetch(`${API_BASE}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp })
+      });
+
+      const otpData = await otpRes.json();
+
+      if (!otpData.success) {
+        toast.error(otpData.message || 'Invalid OTP');
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: Save new password to MongoDB
+      const pwRes = await fetch(`${API_BASE}/api/auth/update-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword })
+      });
+
+      const pwData = await pwRes.json();
+      if (!pwData.success) {
+        toast.error(pwData.message || 'Failed to update password');
+        setLoading(false);
+        return;
+      }
+
+      // Step 3: Clean up session
+      localStorage.removeItem('resetEmail');
+
+      toast.success('Password reset successfully! Please login with your new password.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      toast.error('Server error. Please try again.');
     }
-
-    localStorage.removeItem('resetOTP');
-    localStorage.removeItem('resetEmail');
-
-    toast.success('Password reset successfully!');
-    setTimeout(() => {
-      navigate('/login');
-    }, 2000);
 
     setLoading(false);
   };
@@ -55,20 +87,31 @@ const ResetPassword = () => {
         <i className="bx bx-reset"></i> Reset Password
       </h2>
 
+      {email && (
+        <p className="info-text" style={{ marginBottom: '16px' }}>
+          <i className="bx bx-envelope"></i> OTP sent to: <strong>{email}</strong>
+        </p>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Enter OTP</label>
+          <label>
+            <i className="bx bx-shield-check"></i> Enter OTP
+          </label>
           <input
             type="text"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter 6-digit OTP"
+            placeholder="Enter 6-digit OTP from email"
+            maxLength={6}
             required
           />
         </div>
 
         <div className="form-group">
-          <label>New Password</label>
+          <label>
+            <i className="bx bx-lock"></i> New Password
+          </label>
           <input
             type="password"
             value={newPassword}
@@ -79,7 +122,9 @@ const ResetPassword = () => {
         </div>
 
         <div className="form-group">
-          <label>Confirm Password</label>
+          <label>
+            <i className="bx bx-lock-alt"></i> Confirm Password
+          </label>
           <input
             type="password"
             value={confirmPassword}
@@ -90,12 +135,14 @@ const ResetPassword = () => {
         </div>
 
         <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? 'Resetting...' : 'Reset Password'}
+          <i className="bx bx-check"></i> {loading ? 'Verifying...' : 'Reset Password'}
         </button>
       </form>
 
       <div className="back-link">
-        <Link to="/login">← Back to Login</Link>
+        <Link to="/forgot-password">
+          <i className="bx bx-arrow-back"></i> Back to Forgot Password
+        </Link>
       </div>
     </div>
   );

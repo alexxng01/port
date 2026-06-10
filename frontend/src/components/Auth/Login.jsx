@@ -87,7 +87,7 @@ const Login = () => {
         </div>
 
         <div className="info-text">
-          <i className="bx bx-info-circle"></i> Use: rm91275@gmail.com | Admin@123
+          
         </div>
       </div>
     </div>

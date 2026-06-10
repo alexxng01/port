@@ -87,8 +87,8 @@
     display: flex;
     position: fixed;
     top: 65px;
-    left: 0;
-    width: 100%;
+    left: 50%;
+    width: 60%;
     background: #071b27;
     flex-direction: column;
     text-align: center;

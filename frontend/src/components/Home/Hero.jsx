@@ -59,7 +59,7 @@ const Hero = ({ data }) => {
           className="round"
           src={data.image || '/images/ME.jpeg'}
           alt={data.name}
-          style={{ width: '370px', height: '370px', objectFit: 'cover', borderRadius: '50%' }}
+          // style={{ width: '370px', height: '370px', objectFit: 'cover', borderRadius: '50%' }}
         />
       </div>
     </section>

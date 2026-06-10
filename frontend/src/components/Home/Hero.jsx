@@ -7,9 +7,10 @@ const Hero = ({ data }) => {
   };
 
   const downloadCV = () => {
-    if (data?.cv) {
-      window.open(data.cv, '_blank');
-    }
+    const link = document.createElement('a');
+    link.href = '/cv/Rahul Kumar-Mahato.pdf';
+    link.download = 'Rahul Kumar-Mahato.pdf';
+    link.click();
   };
 
   if (!data) return null;

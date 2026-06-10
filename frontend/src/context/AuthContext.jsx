@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 // Use relative path - automatically works with any origin (localhost, IP, domain)
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://port-wp7o.onrender.com/api';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

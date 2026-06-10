@@ -111,32 +111,10 @@ const ProjectsManager = () => {
 
   return (
     <>
-      <div className="form-container">
-        <h3>Add New Project</h3>
-        <div className="form-group">
-          <label>Title</label>
-          <input type="text" name="title" value={formData.title} onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Description</label>
-          <textarea name="description" rows="3" value={formData.description} onChange={handleChange}></textarea>
-        </div>
-        <div className="form-group">
-          <label>Image URL</label>
-          <input type="text" name="image" value={formData.image} onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Technologies</label>
-          <input
-            type="text"
-            name="technologies"
-            value={formData.technologies}
-            onChange={handleChange}
-            placeholder="React, Node.js, MongoDB"
-          />
-        </div>
+      <div className="form-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+        <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Manage Projects</h3>
         <button className="btn-primary" onClick={handleAdd}>
-          + Add Project
+          <i className="bx bx-plus"></i> Add New Project
         </button>
       </div>
 

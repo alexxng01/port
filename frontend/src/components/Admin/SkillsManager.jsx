@@ -111,7 +111,14 @@ const SkillsManager = () => {
               <input
                 type="text"
                 defaultValue={skill.name}
+                placeholder="Skill name"
                 onBlur={(e) => updateTechnicalSkill(skill.id, { ...skill, name: e.target.value })}
+              />
+              <input
+                type="text"
+                defaultValue={skill.icon || 'bx bx-code'}
+                placeholder="Icon (e.g. bx bxl-react)"
+                onBlur={(e) => updateTechnicalSkill(skill.id, { ...skill, icon: e.target.value })}
               />
               <input
                 type="number"
@@ -133,6 +140,12 @@ const SkillsManager = () => {
               placeholder="Skill name"
               value={newTechSkill.name}
               onChange={(e) => setNewTechSkill({ ...newTechSkill, name: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Icon class (e.g. bx bxl-react)"
+              value={newTechSkill.icon}
+              onChange={(e) => setNewTechSkill({ ...newTechSkill, icon: e.target.value })}
             />
             <input
               type="number"

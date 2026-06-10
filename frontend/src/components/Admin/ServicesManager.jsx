@@ -89,35 +89,10 @@ const ServicesManager = () => {
 
   return (
     <>
-      <div className="form-container">
-        <h3>Add New Service</h3>
-        <div className="form-group">
-          <label>Icon (bx bx-code)</label>
-          <input
-            type="text"
-            value={formData.icon}
-            onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-            placeholder="bx bx-code"
-          />
-        </div>
-        <div className="form-group">
-          <label>Title</label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          />
-        </div>
-        <div className="form-group">
-          <label>Description</label>
-          <textarea
-            rows="3"
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          ></textarea>
-        </div>
+      <div className="form-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
+        <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Manage Services</h3>
         <button className="btn-primary" onClick={handleAdd}>
-          + Add Service
+          <i className="bx bx-plus"></i> Add New Service
         </button>
       </div>
 

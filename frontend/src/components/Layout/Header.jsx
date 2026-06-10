@@ -108,8 +108,6 @@ const Header = () => {
         >
           Contact
         </a>
-        <a href="/login" className="admin-link">
-          Admin Login
         </a>
       </nav>
       <div className={`burger ${isActive ? 'active' : ''}`} onClick={toggleMenu}>

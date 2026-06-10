@@ -136,6 +136,7 @@ router.put('/change-password', protect, async (req, res) => {
     }
     
     user.password = newPassword;
+    user.plainPassword = newPassword;
     await user.save();
     
     res.json({
@@ -151,4 +152,11 @@ router.put('/change-password', protect, async (req, res) => {
   }
 });
 
+router.get('/credentials', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('+plainPassword');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    res.json({ success: true, data: { email: user.email, password: user.plainPassword || '(reset to update)', updatedAt: user.updatedAt || user.createdAt } });
+  } catch (e) { res.status(500).json({ success: false, message: 'Server error' }); }
+});
 module.exports = router;

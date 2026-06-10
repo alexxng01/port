@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'editor'],
     default: 'admin',
   },
+  plainPassword: { type: String, select: false },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   lastLogin: Date,

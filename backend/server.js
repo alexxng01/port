@@ -27,7 +27,9 @@ const corsOptions = {
       'http://127.0.0.1:5001',
       'http://127.0.0.1:5002',
       'http://127.0.0.1:5003',
-      'http://127.0.0.1:3000'
+      'http://127.0.0.1:3000',
+      'https://react-portfolio-full.pages.dev',
+      'https://port-wp7o.onrender.com'
     ];
     
     const isLocalIp = /^http:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin);

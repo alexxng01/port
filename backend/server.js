@@ -42,7 +42,7 @@ let portfolioData = {
     title: 'Full Stack Developer',
     bio: 'I am a passionate Full Stack Developer with expertise in MERN stack. I love creating beautiful and functional web applications.',
     email: 'rm91275@gmail.com',
-    phone: '+977 98XXXXXXXX',
+    phone: '+977 9819640182',
     address: 'Kathmandu, Nepal',
     github: 'https://github.com/',
     linkedin: 'https://linkedin.com/',
@@ -164,7 +164,7 @@ app.post('/api/auth/login', (req, res) => {
   } else {
     res.status(401).json({
       success: false,
-      message: 'Invalid credentials. Use rm91275@gmail.com / Admin@123'
+      message: 'Invalid credentials.'
     });
   }
 });
